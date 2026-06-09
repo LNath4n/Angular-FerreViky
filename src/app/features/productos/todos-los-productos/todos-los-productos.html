@@ -12,15 +12,25 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let producto of productos">
+    @for (producto of (productos$ | async) ?? []; track producto.id) {
+    <tr>
       <td>{{ producto.nombreProducto }}</td>
       <td>{{ producto.marca }}</td>
       <td>{{ producto.categoria }}</td>
       <td>${{ producto.precioNormal }}</td>
-      <td>{{ producto.precioClientes ? '$' + producto.precioClientes : 'N/A' }}</td>
       <td>
-        <button (click)="verDetalle(producto.id)">Ver detalle</button>
+        {{ producto.precioClientes ? '$' + producto.precioClientes : 'N/A' }}
+      </td>
+      <td>
+        <button (click)="verDetalle(producto.id)">
+          Ver detalle
+        </button>
       </td>
     </tr>
+    } @empty {
+    <tr>
+      <td colspan="6">No hay productos disponibles.</td>
+    </tr>
+    }
   </tbody>
 </table>

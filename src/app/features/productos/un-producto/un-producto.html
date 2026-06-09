@@ -1,11 +1,15 @@
 <h2>Detalle del producto</h2>
 
-<div *ngIf="producto">
-  <p><strong>Nombre:</strong> {{ producto.nombreProducto }}</p>
-  <p><strong>Marca:</strong> {{ producto.marca }}</p>
-  <p><strong>Categoría:</strong> {{ producto.categoria }}</p>
-  <p><strong>Precio normal:</strong> ${{ producto.precioNormal }}</p>
-  <p><strong>Precio clientes:</strong> ${{ producto.precioClientes }}</p>
-</div>
+@if (producto$ | async; as producto) {
+  <div>
+    <p><strong>Nombre:</strong> {{ producto.nombreProducto }}</p>
+    <p><strong>Marca:</strong> {{ producto.marca }}</p>
+    <p><strong>Categoría:</strong> {{ producto.categoria }}</p>
+    <p><strong>Precio normal:</strong> ${{ producto.precioNormal }}</p>
+    <p><strong>Precio clientes:</strong> ${{ producto.precioClientes }}</p>
+  </div>
+} @else {
+  <p>No se encontró información del producto.</p>
+}
 
 <button (click)="regresar()">Regresar</button>

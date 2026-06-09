@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClientesService } from '@core/services/clientes';
 import { ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,7 @@ export class Login {
   password = '';
   mensaje = '';
 
-  constructor(private clientesService: ClientesService, private cdr: ChangeDetectorRef
+  constructor(private clientesService: ClientesService, private cdr: ChangeDetectorRef, private router: Router
   ) { }
 
   login() {
@@ -31,4 +32,9 @@ export class Login {
       }
     });
 }
+
+
+  regresar() {
+    this.router.navigate(['/']);
+  }
 }

@@ -5,21 +5,6 @@ import { Routes } from '@angular/router';
 //Dependiendo de la palabra que este en la URL carga ese componente
 export const routes: Routes = [
   {
-    path: '',
-    redirectTo: 'productos',
-    pathMatch: 'full'
-  },
-  {
-    path: 'productos',
-    loadComponent: () => import('./features/productos/todos-los-productos/todos-los-productos')
-      .then(m => m.TodosLosProductos)
-  },
-  {
-    path: 'productos/:id',
-    loadComponent: () => import('./features/productos/un-producto/un-producto')
-      .then(m => m.UnProducto)
-  },
-  {
     path: 'login',
     loadComponent: () => import('./features/clientes/login/login')
       .then(m => m.Login)
@@ -30,7 +15,29 @@ export const routes: Routes = [
       .then(m => m.Register)
   },
   {
+    path: '',
+    loadComponent: () => import('./features/layout/app-nav/app-nav.component')
+      .then(m => m.AppNavComponent),
+    children: [
+      {
+        path: '',
+        redirectTo: 'productos',
+        pathMatch: 'full'
+      },
+      {
+        path: 'productos',
+        loadComponent: () => import('./features/productos/todos-los-productos/todos-los-productos')
+          .then(m => m.TodosLosProductos)
+      },
+      {
+        path: 'productos/:id',
+        loadComponent: () => import('./features/productos/un-producto/un-producto')
+          .then(m => m.UnProducto)
+      },
+    ]
+  },
+  {
     path: '**',
-    redirectTo: 'productos' // cualquier ruta que no exista redirige a productos
+    redirectTo: 'productos'
   }
 ];
