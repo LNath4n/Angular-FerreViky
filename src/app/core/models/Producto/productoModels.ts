@@ -1,8 +1,16 @@
 export interface Producto {
   id: number;
-  nombreProducto: string;
+  codigo: string;
+  descripcion: string;
+  unidad: string;
   marca: string;
-  categoria: string;
-  precioNormal: number;
-  precioClientes: number;
+  precioPublicoIva: number;
+}
+
+export interface PageResponse<T> {
+  content: T[];
+  totalPages: number;
+  totalElements: number;
+  number: number;   
+  size: number;
 }

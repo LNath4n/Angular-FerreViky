@@ -1,13 +1,7 @@
 <h2>Productos</h2>
 
 <div>
-
-  <input type="text" placeholder="Buscar marca o Categoria." [(ngModel)]="textoBusqueda">
-
-  <button (click)="buscarPorMarca()">
-    Buscar
-  </button>
-
+  <input type="text" placeholder="Buscar por descripción o marca." [(ngModel)]="textoBusqueda">
 </div>
 
 <br>
@@ -15,42 +9,27 @@
 <table>
   <thead>
     <tr>
-      <th>Nombre</th>
+      <th>Código</th>
+      <th>Descripción</th>
+      <th>Unidad</th>
       <th>Marca</th>
-      <th>Categoría</th>
-      <th>Precio normal</th>
-      <th>Precio clientes</th>
+      <th>Precio (IVA inc.)</th>
       <th>Acciones</th>
     </tr>
-
   </thead>
   <tbody>
-    @for (producto of (productos$ | async) ?? []; track producto.id) {
+    @for (producto of productosFiltrados; track producto.id) {
     <tr>
-      <td>{{ producto.nombreProducto }}</td>
+      <td>{{ producto.codigo }}</td>
+      <td>{{ producto.descripcion }}</td>
+      <td>{{ producto.unidad }}</td>
       <td>{{ producto.marca }}</td>
-      <td>{{ producto.categoria }}</td>
-      @if (userId()) {
+      <td>${{ producto.precioPublicoIva }}</td>
       <td>
-        <s>${{ producto.precioNormal }}</s>
-      </td>
-      }@else{
-      <td>${{ producto.precioNormal }}</td>
-      }
-      <td>
-        {{ producto.precioClientes ? '$' + producto.precioClientes : 'N/A' }}
-      </td>
-      <td>
-        <button (click)="verDetalle(producto.id)">
-          Ver detalle
-        </button>
-        <button (click)="agregarAlCarrito(producto.id)">
-          Agregar al Carrito
-        </button>
+        <button (click)="verDetalle(producto.id)">Ver detalle</button>
+        <button (click)="agregarAlCarrito(producto.id)">Agregar al Carrito</button>
       </td>
     </tr>
-
-    <br><br>
     } @empty {
     <tr>
       <td colspan="6">No hay productos disponibles.</td>
@@ -58,3 +37,13 @@
     }
   </tbody>
 </table>
+
+<div #centinela style="height: 1px;"></div>
+
+@if (cargando()) {
+  <p style="text-align:center">Cargando más productos...</p>
+}
+
+@if (!hayMasPaginas && !cargando()) {
+  <p style="text-align:center">— Fin de productos —</p>
+}

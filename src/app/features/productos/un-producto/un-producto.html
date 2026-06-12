@@ -2,14 +2,12 @@
 
 @if (producto$ | async; as producto) {
 <div>
-  <p><strong>Nombre:</strong> {{ producto.nombreProducto }}</p>
+  <p><strong>Código:</strong> {{ producto.codigo }}</p>
+  <p><strong>Descripción:</strong> {{ producto.descripcion }}</p>
+  <p><strong>Unidad:</strong> {{ producto.unidad }}</p>
   <p><strong>Marca:</strong> {{ producto.marca }}</p>
-  <p><strong>Categoría:</strong> {{ producto.categoria }}</p>
-  <p><strong>Precio normal:</strong> ${{ producto.precioNormal }}</p>
-  <p><strong>Precio clientes:</strong> ${{ producto.precioClientes }}</p>
-  <button (click)="agregarAlCarrito(producto.id)">
-    Agregar al Carrito
-  </button>
+  <p><strong>Precio (IVA inc.):</strong> ${{ producto.precioPublicoIva }}</p>
+  <button (click)="agregarAlCarrito(producto.id)">Agregar al Carrito</button>
 </div>
 } @else {
 <p>No se encontró información del producto.</p>
