@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ClientesService } from '@core/services/clientes';
-import { ChangeDetectorRef } from '@angular/core';
+import { ClientesService } from '@core/services/Cliente/ClientesService';
 import { Router } from '@angular/router';
 
 @Component({
@@ -11,28 +10,28 @@ import { Router } from '@angular/router';
   styleUrl: './Register.css',
 })
 export class Register {
+
+  private clientesService = inject(ClientesService);
+  private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
+
   email = '';
   password = '';
   mensaje = '';
 
-  constructor(private clientesService: ClientesService, private cdr: ChangeDetectorRef, private router: Router
-  ) { }
-
   registro() {
-  this.clientesService.create({ email: this.email, password: this.password })
-    .subscribe({
-      next: (res) => {
-        this.mensaje = `Cuenta creada! Tu id es: ${res.id}`;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        this.mensaje = err.error;
-        this.cdr.detectChanges();
-      }
-    });
-}
-
-
+    this.clientesService.create({ email: this.email, password: this.password })
+      .subscribe({
+        next: (res) => {
+          this.mensaje = `Cuenta creada! Tu id es: ${res.id}`;
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.mensaje = err.error;
+          this.cdr.detectChanges();
+        }
+      });
+  }
 
   regresar() {
     this.router.navigate(['/']);

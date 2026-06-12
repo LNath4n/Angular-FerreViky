@@ -2,10 +2,7 @@
 
 <div>
 
-  <input
-    type="text"
-    placeholder="Buscar marca o Categoria."
-    [(ngModel)]="textoBusqueda">
+  <input type="text" placeholder="Buscar marca o Categoria." [(ngModel)]="textoBusqueda">
 
   <button (click)="buscarPorMarca()">
     Buscar
@@ -25,7 +22,7 @@
       <th>Precio clientes</th>
       <th>Acciones</th>
     </tr>
-    
+
   </thead>
   <tbody>
     @for (producto of (productos$ | async) ?? []; track producto.id) {
@@ -33,7 +30,13 @@
       <td>{{ producto.nombreProducto }}</td>
       <td>{{ producto.marca }}</td>
       <td>{{ producto.categoria }}</td>
+      @if (userId()) {
+      <td>
+        <s>${{ producto.precioNormal }}</s>
+      </td>
+      }@else{
       <td>${{ producto.precioNormal }}</td>
+      }
       <td>
         {{ producto.precioClientes ? '$' + producto.precioClientes : 'N/A' }}
       </td>
@@ -41,10 +44,13 @@
         <button (click)="verDetalle(producto.id)">
           Ver detalle
         </button>
+        <button (click)="agregarAlCarrito(producto.id)">
+          Agregar al Carrito
+        </button>
       </td>
     </tr>
 
-<br><br>
+    <br><br>
     } @empty {
     <tr>
       <td colspan="6">No hay productos disponibles.</td>

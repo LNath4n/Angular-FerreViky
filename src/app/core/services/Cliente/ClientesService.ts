@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
-import { LoginClienteDto, CreacionClienteRespuestaDto } from '@core/models/cliente';
+import { LoginClienteDto, CreacionClienteRespuestaDto, LoginResponse} from '@core/models/Cliente/clienteModels';
+
 
 @Injectable({ providedIn: 'root' })
 export class ClientesService {
@@ -10,8 +11,8 @@ export class ClientesService {
 
   constructor(private http: HttpClient) {}
 
-  login(dto: LoginClienteDto): Observable<string> {
-    return this.http.post(`${this.url}/login`, dto, { responseType: 'text' });
+  login(dto: LoginClienteDto): Observable<LoginResponse> {
+  return this.http.post<LoginResponse>(`${this.url}/login`, dto);
   }
 
   create(dto: LoginClienteDto): Observable<CreacionClienteRespuestaDto> {

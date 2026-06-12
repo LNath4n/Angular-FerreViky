@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ClientesService } from '@core/services/clientes';
-import { ChangeDetectorRef } from '@angular/core';
+import { ClientesService } from '@core/services/Cliente/ClientesService';
+import { AuthService } from '@core/services/Auth/auth';
 import { Router } from '@angular/router';
 
 @Component({
@@ -12,27 +12,34 @@ import { Router } from '@angular/router';
 })
 export class Login {
 
+  private clientesService = inject(ClientesService);
+  private authService = inject(AuthService);
+  private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
+
   email = '';
   password = '';
   mensaje = '';
 
-  constructor(private clientesService: ClientesService, private cdr: ChangeDetectorRef, private router: Router
-  ) { }
-
   login() {
-  this.clientesService.login({ email: this.email, password: this.password })
-    .subscribe({
-      next: (res) => {
-        this.mensaje = res;
-        this.cdr.detectChanges();  
-      },
-      error: (err) => {
-        this.mensaje = err.error;
-        this.cdr.detectChanges();  
-      }
-    });
-}
+    this.clientesService.login({ email: this.email, password: this.password })
+      .subscribe({
+        next: (res) => {
+          this.authService.setUserId(res.id);
+          this.mensaje = 'Login exitoso';
+          this.irProductos();
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.mensaje = err.error;
+          this.cdr.detectChanges();
+        }
+      });
+  }
 
+  irProductos() {
+    this.router.navigate(['/productos']);
+  }
 
   regresar() {
     this.router.navigate(['/']);

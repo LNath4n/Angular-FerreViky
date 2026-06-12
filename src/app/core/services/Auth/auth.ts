@@ -1,4 +1,3 @@
-// src/app/core/services/auth.service.ts
 import { Injectable, signal } from '@angular/core';
 
 @Injectable({
@@ -12,7 +11,7 @@ export class AuthService {
     return this.userId();
   }
 
-  // Para usarlo como signal reactivo (si lo necesitas en template)
+  // Para usarlo como signal reactivo
   getUserIdSignal() {
     return this.userId.asReadonly();
   }

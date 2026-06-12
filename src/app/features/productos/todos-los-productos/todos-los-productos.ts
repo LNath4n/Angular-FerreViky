@@ -1,51 +1,61 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { Producto } from '@core/models/producto';
-import { ProductosService } from '@core/services/productos';
-import { Observable } from 'rxjs';
+import { Carrito } from '@core/models/Carrito/carritoModels';
+import { ProductosService } from '@core/services/Producto/ProductosService';
+import { CarritosService } from '@core/services/Carrito/CarritosService';
 import { FormsModule } from '@angular/forms';
 import { map } from 'rxjs/operators';
-
-//Esto de @Component le dice a angular que esto es un componente, y le dice cual es su html  cual su css y sus importaciones
+import { AuthService } from '@core/services/Auth/auth';
 @Component({
-  selector: 'app-todos-los-productos', //Por si queremos llamar este HTML en otro HTML seria <app-todos-los-productos/> Reutilizar codigo
-imports: [CommonModule, FormsModule],
+  selector: 'app-todos-los-productos',
+  imports: [CommonModule, FormsModule],
   templateUrl: './todos-los-productos.html',
   styleUrl: './todos-los-productos.css',
 })
-
 export class TodosLosProductos {
+
+  private productosService = inject(ProductosService);
+  private router = inject(Router);
+  private authService = inject(AuthService);
+  private carritosService = inject(CarritosService);
 
   textoBusqueda: string = '';
 
-  productos$!: Observable<Producto[]>;
-  marcas$!: Observable<string[]>;
-  categorias$!: Observable<string[]>;
-
-  constructor(
-    private productosService: ProductosService,
-    private router: Router
-  ) {
-    this.productos$ = this.productosService.getAll();
-    this.marcas$ = this.productosService.obtenerMarcas();
-    this.categorias$ = this.productosService.obtenerCategorias();
-  }
+  productos$ = this.productosService.getAll();
+  marcas$ = this.productosService.obtenerMarcas();
+  categorias$ = this.productosService.obtenerCategorias();
+  userId = this.authService.getUserIdSignal();
 
   verDetalle(id: number) {
     this.router.navigate(['/productos', id]);
   }
 
-buscarPorMarca() {
-  const texto = this.textoBusqueda.toLowerCase().trim();
+  agregarAlCarrito(idProducto: number) {
+    const idCliente = this.userId();
 
-  this.productos$ = this.productosService.getAll().pipe(
-    map(productos =>
-      productos.filter(producto =>
-        producto.marca.toLowerCase().includes(texto) ||
-        producto.categoria.toLowerCase().includes(texto)
+    if (!idCliente) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    this.carritosService.agregar({ idCliente, idProducto, cantidad: 1 })
+      .subscribe({
+        next: (res) => console.log(res),
+        error: (err) => console.error(err)
+      });
+  }
+
+  buscarPorMarca() {
+    const texto = this.textoBusqueda.toLowerCase().trim();
+
+    this.productos$ = this.productosService.getAll().pipe(
+      map(productos =>
+        productos.filter(producto =>
+          producto.marca.toLowerCase().includes(texto) ||
+          producto.categoria.toLowerCase().includes(texto)
+        )
       )
-    )
-  );
-}
+    );
+  }
 }
