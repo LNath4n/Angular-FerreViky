@@ -7,6 +7,7 @@
     <mat-toolbar>Menu</mat-toolbar>
     <mat-nav-list>
       <a mat-list-item routerLink="/productos" (click)="drawer.close()">Productos</a>
+      <a mat-list-item routerLink="/grupos" (click)="drawer.close()">Grupo de Productos</a>
 
       @if (userId()) {
         <a mat-list-item routerLink="/perfil" (click)="drawer.close()">
@@ -38,6 +39,7 @@
       <span>FerreViky</span>
       <span class="spacer"></span>
       <a mat-button routerLink="/productos">Productos</a>
+      <a mat-button routerLink="/grupos">Grupo de Productos</a>
 
       @if (userId()) {
         <a mat-button routerLink="/perfil">

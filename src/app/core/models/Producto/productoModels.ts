@@ -14,3 +14,17 @@ export interface PageResponse<T> {
   number: number;   
   size: number;
 }
+
+export interface GrupoPublico {
+  id: number;
+  nombre: string;
+  productoIds: number[];
+}
+
+export interface GrupoAdmin {
+  id: number;
+  nombre: string;
+  prefijoClave: string;
+  palabrasComunes: string;
+  productoIds: number[];
+}

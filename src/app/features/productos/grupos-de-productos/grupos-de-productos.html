@@ -1,0 +1,44 @@
+<h2>Grupos de Productos</h2>
+
+<div>
+  <input type="text" placeholder="Buscar por nombre de grupo." [(ngModel)]="textoBusqueda">
+</div>
+
+<br>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Productos</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (grupo of gruposFiltrados; track grupo.id) {
+    <tr>
+      <td>{{ grupo.id }}</td>
+      <td>{{ grupo.nombre }}</td>
+      <td>{{ grupo.productoIds.length }}</td>
+      <td>
+        <button (click)="verDetalle(grupo.id)">Ver detalle</button>
+      </td>
+    </tr>
+    } @empty {
+    <tr>
+      <td colspan="4">No hay grupos disponibles.</td>
+    </tr>
+    }
+  </tbody>
+</table>
+
+<div style="height: 1px;"></div>
+
+@if (cargando()) {
+  <p style="text-align:center">Cargando más grupos...</p>
+}
+
+@if (!hayMasPaginas && !cargando()) {
+  <p style="text-align:center">— Fin de grupos —</p>
+}

@@ -1,0 +1,50 @@
+<h2>Detalle del grupo</h2>
+
+@if (grupo$ | async; as grupo) {
+<div>
+  <p><strong>ID:</strong> {{ grupo.id }}</p>
+  <p><strong>Nombre:</strong> {{ grupo.nombre }}</p>
+
+  <h3>Productos del grupo</h3>
+
+  @if (productos$ | async; as productos) {
+    <table>
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Descripción</th>
+          <th>Unidad</th>
+          <th>Marca</th>
+          <th>Precio (IVA inc.)</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (producto of productos; track producto.id) {
+        <tr>
+          <td>{{ producto.codigo }}</td>
+          <td>{{ producto.descripcion }}</td>
+          <td>{{ producto.unidad }}</td>
+          <td>{{ producto.marca }}</td>
+          <td>${{ producto.precioPublicoIva }}</td>
+          <td>
+            <button (click)="agregarAlCarrito(producto.id)">Agregar al Carrito</button>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="6">Este grupo no tiene productos.</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p>Cargando productos...</p>
+  }
+
+</div>
+} @else {
+<p>No se encontró información del grupo.</p>
+}
+
+<button (click)="regresar()">Regresar</button>

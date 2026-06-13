@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
 import { Producto, PageResponse } from '@core/models/Producto/productoModels';
+import { GrupoPublico, GrupoAdmin } from '@core/models/Producto/productoModels';
 
 @Injectable({
   providedIn: 'root'
@@ -22,4 +23,19 @@ export class ProductosService {
   getById(id: number): Observable<Producto> {
     return this.http.get<Producto>(`${this.url}/${id}`);
   }
+
+
+  getAllGrupos(page: number = 0, size: number = 50): Observable<PageResponse<GrupoPublico>> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+    return this.http.get<PageResponse<GrupoPublico>>(`${this.url}/grupos`, { params });
+  }
+
+
+  getGrupoById(id: number): Observable<GrupoPublico> {
+  return this.http.get<GrupoPublico>(`${this.url}/grupos/${id}`);
+}
+
+
 }

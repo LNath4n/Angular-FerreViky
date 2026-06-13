@@ -1,8 +1,5 @@
 import { Routes } from '@angular/router';
-//Este archivo se encarga de Redirijir la aplicacion
-//La neta esto es nuevo xd
-//Pero en pocas palabras utiliza funciones Lambda para cargar el componente
-//Dependiendo de la palabra que este en la URL carga ese componente
+
 export const routes: Routes = [
   {
     path: 'login',
@@ -33,6 +30,16 @@ export const routes: Routes = [
         path: 'productos/:id',
         loadComponent: () => import('./features/productos/un-producto/un-producto')
           .then(m => m.UnProducto)
+      },
+      {
+        path: 'grupos',
+        loadComponent: () => import('./features/productos/grupos-de-productos/grupos-de-productos')
+          .then(m => m.GruposDeProductos)
+      },
+      {
+        path: 'grupos/:id',
+        loadComponent: () => import('./features/productos/grupos-de-productos-individual/grupos-de-productos-individual')
+          .then(m => m.GruposDeProductosIndividual)
       },
     ]
   },
