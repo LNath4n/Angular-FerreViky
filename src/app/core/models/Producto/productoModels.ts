@@ -5,6 +5,7 @@ export interface Producto {
   unidad: string;
   marca: string;
   precioPublicoIva: number;
+  stock:number;
 }
 
 export interface PageResponse<T> {

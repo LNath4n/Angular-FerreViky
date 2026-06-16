@@ -25,6 +25,7 @@
       <td>{{ producto.unidad }}</td>
       <td>{{ producto.marca }}</td>
       <td>${{ producto.precioPublicoIva }}</td>
+      <td>{{ producto.stock }}</td>
       <td>
         <button (click)="verDetalle(producto.id)">Ver detalle</button>
         <button (click)="agregarAlCarrito(producto.id)">Agregar al Carrito</button>

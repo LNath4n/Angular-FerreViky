@@ -37,6 +37,11 @@ export const routes: Routes = [
           .then(m => m.GruposDeProductos)
       },
       {
+        path: 'carrito',
+        loadComponent: () => import('./features/carrito/ver-carrito/ver-carrito')
+          .then(m => m.VerCarrito)
+      },
+      {
         path: 'grupos/:id',
         loadComponent: () => import('./features/productos/grupos-de-productos-individual/grupos-de-productos-individual')
           .then(m => m.GruposDeProductosIndividual)

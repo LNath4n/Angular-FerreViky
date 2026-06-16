@@ -1,0 +1,17 @@
+@if (carrito$ | async; as carrito) {
+  <div>
+    <p>Cliente: {{ carrito.emailCliente }}</p>
+    
+    @for (item of carrito.productos; track item.productoId) {
+      <div>
+        <p>{{ item.descripcion }} ({{ item.clave }})</p>
+        <p>Cantidad: {{ item.cantidad }}</p>
+        <p>Precio: {{ item.precioPublicoIva | currency:'MXN' }}</p>
+      </div>
+    }
+
+    <p>Subtotal: {{ carrito.subtotal | currency:'MXN' }}</p>
+  </div>
+}@else{
+    <p>Vacio</p>
+}
