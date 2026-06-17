@@ -14,15 +14,14 @@ import { CarritosService } from '@core/services/Carrito/CarritosService';
   templateUrl: './grupos-de-productos-individual.html',
   styleUrl: './grupos-de-productos-individual.css',
 })
-export class GruposDeProductosIndividual  {
+export class GruposDeProductosIndividual {
 
   private productosService = inject(ProductosService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private authService = inject(AuthService);
   private carritosService = inject(CarritosService);
-
-  userId = this.authService.getUserIdSignal();
+  mensaje = '';
 
   id$ = this.route.paramMap.pipe(
     map(params => Number(params.get('id')))
@@ -42,17 +41,21 @@ export class GruposDeProductosIndividual  {
   );
 
   agregarAlCarrito(idProducto: number) {
-    const idCliente = this.userId();
-
-    if (!idCliente) {
+    if (!this.authService.getToken()) {
       this.router.navigate(['/login']);
       return;
     }
 
-    this.carritosService.agregar({ idCliente, idProducto, cantidad: 1 })
+    this.carritosService.agregar({ idProducto, cantidad: 1 })
       .subscribe({
-        next: (res) => console.log(res),
-        error: (err) => console.error(err)
+        next: (res) => {
+          this.mensaje = 'Se agrego correctamente';
+          console.log(res)
+        },
+        error: (err) => {
+          console.error(err)
+          this.mensaje = 'Hubo algun error';
+        }
       });
   }
 

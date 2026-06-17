@@ -8,5 +8,5 @@ export interface CreacionClienteRespuestaDto {
   email: string;
 }
 export interface LoginResponse {
-  id: number;
+  token: string;
 }

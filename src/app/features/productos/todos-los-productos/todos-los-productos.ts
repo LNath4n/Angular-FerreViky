@@ -21,8 +21,7 @@ export class TodosLosProductos implements AfterViewInit, OnDestroy {
   private carritosService = inject(CarritosService);
 
   textoBusqueda = '';
-  userId = this.authService.getUserIdSignal();
-
+  mensaje = '';
   productos = signal<Producto[]>([]);
   cargando = signal(false);
   paginaActual = 0;
@@ -85,15 +84,21 @@ export class TodosLosProductos implements AfterViewInit, OnDestroy {
   }
 
   agregarAlCarrito(idProducto: number) {
-    const idCliente = this.userId();
-    if (!idCliente) {
+    if (!this.authService.getToken()) {
       this.router.navigate(['/login']);
       return;
     }
-    this.carritosService.agregar({ idCliente, idProducto, cantidad: 1 })
+
+    this.carritosService.agregar({ idProducto, cantidad: 1 })
       .subscribe({
-        next: (res) => console.log(res),
-        error: (err) => console.error(err)
+        next: (res) => {
+          this.mensaje = 'Se agrego correctamente';
+          console.log(res)
+        },
+        error: (err) => {
+          console.error(err)
+          this.mensaje = 'Hubo algun error';
+        }
       });
   }
 }

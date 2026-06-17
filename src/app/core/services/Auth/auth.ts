@@ -1,26 +1,26 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private userId = signal<number | null>(null);
+  private token = signal<string | null>(localStorage.getItem('token'));
 
-  // Getter
-  getUserId() {
-    return this.userId();
+  getToken() {
+    return this.token();
   }
 
-  // Para usarlo como signal reactivo
-  getUserIdSignal() {
-    return this.userId.asReadonly();
+  isLoggedIn() {
+    return computed(() => this.token() !== null);
   }
 
-  setUserId(id: number) {
-    this.userId.set(id);
+  setToken(newToken: string) {
+    localStorage.setItem('token', newToken);
+    this.token.set(newToken);
   }
 
-  clearUserId() {
-    this.userId.set(null);
+  clearToken() {
+    localStorage.removeItem('token');
+    this.token.set(null);
   }
 }

@@ -29,7 +29,7 @@ export class AppNavComponent {
   private breakpointObserver = inject(BreakpointObserver);
   private authService = inject(AuthService);
 
-  userId = this.authService.getUserIdSignal();
+  isLoggedIn = this.authService.isLoggedIn();
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map((result) => result.matches),
@@ -37,6 +37,6 @@ export class AppNavComponent {
   );
 
   logout() {
-    this.authService.clearUserId();
+    this.authService.clearToken();
   }
 }

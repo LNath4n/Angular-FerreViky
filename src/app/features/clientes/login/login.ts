@@ -25,13 +25,13 @@ export class Login {
     this.clientesService.login({ email: this.email, password: this.password })
       .subscribe({
         next: (res) => {
-          this.authService.setUserId(res.id);
+          this.authService.setToken(res.token);
           this.mensaje = 'Login exitoso';
           this.irProductos();
-          this.cdr.detectChanges();
         },
         error: (err) => {
           this.mensaje = err.error;
+          this.mensaje = 'Credenciales incorrectas';
           this.cdr.detectChanges();
         }
       });

@@ -23,11 +23,11 @@ export class Register {
     this.clientesService.create({ email: this.email, password: this.password })
       .subscribe({
         next: (res) => {
-          this.mensaje = `Cuenta creada! Tu id es: ${res.id}`;
+          this.mensaje = `Cuenta creada!`;
           this.cdr.detectChanges();
         },
         error: (err) => {
-          this.mensaje = err.error;
+          this.mensaje = `Error`;
           this.cdr.detectChanges();
         }
       });

@@ -11,21 +11,11 @@ import { CommonModule } from '@angular/common';
   styleUrl: './ver-carrito.css',
 })
 export class VerCarrito {
-
   private carritoService = inject(CarritosService);
-  private authService = inject(AuthService);
-
-  userId = this.authService.getUserIdSignal();
-
   carrito$?: Observable<Carrito>;
 
   constructor() {
-    const id = this.userId();
-
-    if (id !== null) {
-      this.carrito$ = this.carritoService.obtenerPorId(id);
-    }
+    this.carrito$ = this.carritoService.obtenerCarrito(); // GET /carrito sin id
   }
 }
-
 

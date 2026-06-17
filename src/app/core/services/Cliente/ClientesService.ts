@@ -7,7 +7,7 @@ import { LoginClienteDto, CreacionClienteRespuestaDto, LoginResponse} from '@cor
 
 @Injectable({ providedIn: 'root' })
 export class ClientesService {
-  private url = `${environment.apiUrl}/clientes`;
+  private url = `${environment.apiUrl}/auth`;
 
   constructor(private http: HttpClient) {}
 

@@ -1,5 +1,4 @@
 export interface AgregarCarrito {
-  idCliente: number;
   idProducto: number;
   cantidad: number;
 }

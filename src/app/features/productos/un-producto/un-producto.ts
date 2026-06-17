@@ -21,8 +21,7 @@ export class UnProducto {
   private authService = inject(AuthService);
   private carritosService = inject(CarritosService);
 
-
-  userId = this.authService.getUserIdSignal();
+  mensaje = '';
 
   id$ = this.route.paramMap.pipe(
     map(params => Number(params.get('id')))
@@ -33,19 +32,23 @@ export class UnProducto {
   );
 
   agregarAlCarrito(idProducto: number) {
-  const idCliente = this.userId();
+    if (!this.authService.getToken()) {
+      this.router.navigate(['/login']);
+      return;
+    }
 
-  if (!idCliente) {
-    this.router.navigate(['/login']);
-    return;
+    this.carritosService.agregar({ idProducto, cantidad: 1 })
+      .subscribe({
+        next: (res) => {
+          this.mensaje = 'Se agrego correctamente';
+          console.log(res)
+        },
+        error: (err) => {
+          console.error(err)
+          this.mensaje = 'Hubo algun error';
+        }
+      });
   }
-
-  this.carritosService.agregar({ idCliente, idProducto, cantidad: 1 })
-    .subscribe({
-      next: (res) => console.log(res), 
-      error: (err) => console.error(err)
-    });
-}
 
   regresar() {
     this.router.navigate(['/productos']);
