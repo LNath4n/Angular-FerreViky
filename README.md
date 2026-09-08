@@ -1,5 +1,9 @@
 # AngularFerreViky
 
+Frontend for **FerreViky**, an e-commerce application for a hardware store, built with Angular. This project consumes the [Spring-FerreViky](https://github.com/LNath4n/ecommerce-api-jwt-spring-boot) REST API for authentication, product catalog, and cart features.
+
+Development is currently paused, and the frontend is not as advanced as the backend yet.
+
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.0.
 
 ## Development server
@@ -53,6 +57,10 @@ ng e2e
 ```
 
 Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+
+## Related Projects
+
+- Backend: [Spring-FerreViky](https://github.com/LNath4n/Spring-FerreViky)
 
 ## Additional Resources
 
