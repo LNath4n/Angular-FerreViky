@@ -11,7 +11,7 @@ import { map, shareReplay } from 'rxjs/operators';
 import { RouterOutlet } from '@angular/router';
 import { AuthService } from '@core/services/Auth/auth';
 import { RouterLink } from '@angular/router';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-app-nav',
   templateUrl: './app-nav.component.html',
@@ -28,7 +28,7 @@ import { RouterLink } from '@angular/router';
 export class AppNavComponent {
   private breakpointObserver = inject(BreakpointObserver);
   private authService = inject(AuthService);
-
+  private router = inject(Router);
   isLoggedIn = this.authService.isLoggedIn();
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
@@ -38,5 +38,6 @@ export class AppNavComponent {
 
   logout() {
     this.authService.clearToken();
+    this.router.navigate(['/login']);
   }
 }
