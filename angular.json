@@ -25,7 +25,14 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/material-theme.scss", "src/styles.css"],
+            "styles": [
+              "src/material-theme.scss",
+              "src/styles.css",
+              "src/styles/bootstrap.min.css",
+              "src/styles/tiny-slider.css",
+              "src/styles/style.css",
+              "src/styles.css"
+            ],
             "server": "src/main.server.ts",
             "outputMode": "server",
             "security": {
