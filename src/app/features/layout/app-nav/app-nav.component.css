@@ -1,21 +1,38 @@
-.sidenav-container {
-  height: 100%;
+.custom-navbar-cta {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
 }
 
-.sidenav {
-  width: 200px;
+.custom-navbar .custom-navbar-cta li,
+.custom-navbar .custom-navbar-cta li:first-child {
+  display: flex;
+  align-items: center;
+  margin: 0 !important;
 }
 
-.sidenav .mat-toolbar {
-  background: inherit;
+.custom-navbar .custom-navbar-cta .nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0 !important;
+  line-height: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-.mat-toolbar.mat-primary {
-  position: sticky;
-  top: 0;
-  z-index: 1;
+.custom-navbar .custom-navbar-cta .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
-.spacer {
-  flex: 1 1 auto;
+.custom-navbar-cta .nav-link svg {
+  opacity: 0.85;
+  transition: opacity 0.2s;
+}
+
+.custom-navbar-cta .nav-link:hover svg {
+  opacity: 1;
 }

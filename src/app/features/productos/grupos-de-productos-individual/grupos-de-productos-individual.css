@@ -1,0 +1,6 @@
+/* Por si style.css define otro verde para btn-primary */
+.btn-primary {
+  background-color: #3b5d50;
+  border-color: #3b5d50;
+  color: #fff;
+}

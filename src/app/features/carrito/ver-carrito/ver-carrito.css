@@ -1,0 +1,18 @@
+.site-blocks-table .product-thumbnail img {
+  max-width: 90px;
+}
+
+.site-blocks-table td {
+  vertical-align: middle;
+}
+
+.site-blocks-table .btn-black svg {
+  vertical-align: middle;
+}
+
+/* Por si style.css define otro verde para btn-primary */
+.btn-primary {
+  background-color: #3b5d50;
+  border-color: #3b5d50;
+  color: #fff;
+}

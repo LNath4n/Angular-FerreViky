@@ -1,9 +1,40 @@
-<h2>Login</h2>
+<div class="login-page">
+  <div class="row g-0 login-row">
 
-<input type="email" [(ngModel)]="email" placeholder="Email" />
-<input type="password" [(ngModel)]="password" placeholder="Password" />
-<button (click)="login()">Entrar</button>
+    <!-- Panel izquierdo (solo escritorio) -->
+    <div class="col-lg-6 d-none d-lg-flex hero login-panel">
+      <div class="intro-excerpt">
+        <h1>FerreViky<span class="login-dot">.</span></h1>
+        <p class="mb-4">Todo para tu obra y tu hogar en un solo lugar. Inicia sesión para ver tu carrito y tu perfil.</p>
+        <a class="btn btn-white-outline" style="cursor: pointer" (click)="regresar()">Ver productos</a>
+      </div>
+    </div>
 
-<p>{{ mensaje }}</p>
+    <!-- Formulario -->
+    <div class="col-12 col-lg-6 login-form-wrap">
+      <div class="login-form">
+        <h2 class="section-title mb-2">Bienvenido</h2>
+        <p class="mb-4">Ingresa tus datos para continuar.</p>
 
-<button (click)="regresar()">Regresar</button>
+        <div class="mb-3">
+          <label class="form-label" for="email">Email</label>
+          <input id="email" type="email" class="form-control" placeholder="correo@ejemplo.com"
+            autocomplete="email" [(ngModel)]="email" />
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label" for="password">Password</label>
+          <input id="password" type="password" class="form-control" placeholder="Tu contraseña"
+            autocomplete="current-password" [(ngModel)]="password" (keyup.enter)="login()" />
+        </div>
+
+        <button class="btn btn-primary w-100" (click)="login()">Entrar</button>
+
+        <p class="text-center mt-4 mb-0">
+          <a class="more" style="cursor: pointer" (click)="regresar()">Regresar</a>
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>

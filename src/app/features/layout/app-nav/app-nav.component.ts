@@ -8,17 +8,18 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
-import { RouterOutlet } from '@angular/router';
 import { AuthService } from '@core/services/Auth/auth';
-import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { LucideUser, LucideShoppingCart, LucideLogOut } from '@lucide/angular';
+
 @Component({
   selector: 'app-app-nav',
   templateUrl: './app-nav.component.html',
-  styleUrl: './app-nav.component.css',
-  imports: [RouterOutlet, RouterLink,
+  styleUrls: ['./app-nav.component.css', '../../../../styles/bootstrap.min.css', '../../../../styles/style.css'],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive,
     MatToolbarModule,
-    MatButtonModule,
+    MatButtonModule, LucideUser, LucideShoppingCart, LucideLogOut,
     MatSidenavModule,
     MatListModule,
     MatIconModule,
@@ -26,6 +27,12 @@ import { Router } from '@angular/router';
   ],
 })
 export class AppNavComponent {
+
+  readonly LucideUser = LucideUser;
+  readonly LucideShoppingCart = LucideShoppingCart;
+  readonly LucideLogOut = LucideLogOut;
+
+
   private breakpointObserver = inject(BreakpointObserver);
   private authService = inject(AuthService);
   private router = inject(Router);

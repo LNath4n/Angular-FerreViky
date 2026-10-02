@@ -1,17 +1,114 @@
-@if (carrito$ | async; as carrito) {
-  <div>
-    <p>Cliente: {{ carrito.emailCliente }}</p>
-    
-    @for (item of carrito.productos; track item.productoId) {
-      <div>
-        <p>{{ item.descripcion }} ({{ item.clave }})</p>
-        <p>Cantidad: {{ item.cantidad }}</p>
-        <p>Precio: {{ item.precioPublicoIva | currency:'MXN' }}</p>
+<!-- Start Hero Section -->
+<div class="hero">
+  <div class="container">
+    <div class="row justify-content-between">
+      <div class="col-lg-5">
+        <div class="intro-excerpt">
+          <h1>Carrito</h1>
+        </div>
       </div>
+    </div>
+  </div>
+</div>
+<!-- End Hero Section -->
+
+@let carrito = carrito$ | async;
+
+<div class="untree_co-section before-footer-section">
+  <div class="container">
+
+    @if (carrito && carrito.productos.length > 0) {
+
+    <p class="mb-4">Cliente: <strong>{{ carrito.emailCliente }}</strong></p>
+
+    <div class="row mb-5">
+      <div class="col-md-12">
+        <div class="site-blocks-table table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="product-thumbnail">Imagen</th>
+                <th class="product-name">Producto</th>
+                <th class="product-price">Precio</th>
+                <th class="product-quantity">Cantidad</th>
+                <th class="product-total">Total</th>
+                <th class="product-remove">Quitar</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of carrito.productos; track item.productoId) {
+              <tr>
+                <td class="product-thumbnail">
+                  <img src="images/product-1.png" alt="Imagen" class="img-fluid">
+                </td>
+                <td class="product-name">
+                  <h2 class="h5 text-black">{{ item.descripcion }}</h2>
+                  <small>{{ item.clave }}</small>
+                </td>
+                <td>{{ item.precioPublicoIva | currency:'MXN' }}</td>
+                <td>
+                  <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
+                    <div class="input-group-prepend">
+                      <button class="btn btn-outline-black decrease" type="button"
+                        [disabled]="item.cantidad <= 1" (click)="cambiarCantidad(item, -1)">&minus;</button>
+                    </div>
+                    <input type="text" class="form-control text-center quantity-amount"
+                      [value]="item.cantidad" readonly aria-label="Cantidad">
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-black increase" type="button"
+                        (click)="cambiarCantidad(item, 1)">&plus;</button>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ item.cantidad * item.precioPublicoIva | currency:'MXN' }}</td>
+                <td>
+                  <button type="button" class="btn btn-black btn-sm" aria-label="Quitar del carrito"
+                    (click)="eliminar(item.productoId)">
+                    <svg lucideTrash2 color="#fff" [size]="16"></svg>
+                  </button>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+      </div>
+
+      <div class="col-md-6">
+        <div class="row justify-content-end">
+          <div class="col-md-7">
+            <div class="row">
+              <div class="col-md-12 text-right border-bottom mb-4">
+                <h3 class="text-black h4 text-uppercase">Total del carrito</h3>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-6">
+                <span class="text-black">Subtotal</span>
+              </div>
+              <div class="col-6 text-end">
+                <strong class="text-black">{{ carrito.subtotal | currency:'MXN' }}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    } @else {
+
+    <div class="text-center py-5">
+      <h2 class="section-title mb-3">Tu carrito está vacío</h2>
+      <p class="mb-4">Agrega productos para verlos aquí.</p>
+      <button class="btn btn-primary" (click)="seguirComprando()">Ver productos</button>
+    </div>
+
     }
 
-    <p>Subtotal: {{ carrito.subtotal | currency:'MXN' }}</p>
   </div>
-}@else{
-    <p>Vacio</p>
-}
+</div>

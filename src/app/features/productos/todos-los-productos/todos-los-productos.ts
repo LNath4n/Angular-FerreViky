@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ProductosService } from '@core/services/Producto/ProductosService';
 import { CarritosService } from '@core/services/Carrito/CarritosService';
-import { FormsModule } from '@angular/forms';
 import { AuthService } from '@core/services/Auth/auth';
 import { Producto } from '@core/models/Producto/productoModels';
+import { AlertaService } from '@core/services/Modals/ModalsService';
 
 @Component({
   selector: 'app-todos-los-productos',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   templateUrl: './todos-los-productos.html',
   styleUrl: './todos-los-productos.css',
 })
@@ -19,9 +19,8 @@ export class TodosLosProductos implements AfterViewInit, OnDestroy {
   private router = inject(Router);
   private authService = inject(AuthService);
   private carritosService = inject(CarritosService);
+  private alerta = inject(AlertaService);
 
-  textoBusqueda = '';
-  mensaje = '';
   productos = signal<Producto[]>([]);
   cargando = signal(false);
   paginaActual = 0;
@@ -49,7 +48,7 @@ export class TodosLosProductos implements AfterViewInit, OnDestroy {
     const el = this.sidenavContent;
     const distanciaAlFondo = el.scrollHeight - el.scrollTop - el.clientHeight;
 
-    // Cuando estemos a menos de 200px del fondo, cargamos
+    // Cuando estemos a menos de 300px del fondo, cargamos
     if (distanciaAlFondo < 300) {
       this.cargarMas();
     }
@@ -70,34 +69,25 @@ export class TodosLosProductos implements AfterViewInit, OnDestroy {
     });
   }
 
-  get productosFiltrados(): Producto[] {
-    const texto = this.textoBusqueda.toLowerCase().trim();
-    if (!texto) return this.productos();
-    return this.productos().filter(p =>
-      p.marca.toLowerCase().includes(texto) ||
-      p.descripcion.toLowerCase().includes(texto)
-    );
-  }
-
   verDetalle(id: number) {
     this.router.navigate(['/productos', id]);
   }
 
   agregarAlCarrito(idProducto: number) {
     if (!this.authService.getToken()) {
-      this.router.navigate(['/login']);
+      this.alerta.advertencia('Debes de iniciar sesion');
       return;
     }
 
     this.carritosService.agregar({ idProducto, cantidad: 1 })
       .subscribe({
         next: (res) => {
-          this.mensaje = 'Se agrego correctamente';
+          this.alerta.exito('Se agregó correctamente al carrito.');
           console.log(res)
         },
         error: (err) => {
           console.error(err)
-          this.mensaje = 'Hubo algun error';
+          this.alerta.error('Hubo algún error al agregar el producto.')
         }
       });
   }

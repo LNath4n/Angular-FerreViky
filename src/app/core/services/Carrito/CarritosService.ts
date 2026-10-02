@@ -18,4 +18,12 @@ export class CarritosService {
     obtenerCarrito(): Observable<Carrito> {
         return this.http.get<Carrito>(`${this.url}`);
     }
+
+    actualizar(idProducto: number, cantidad: number): Observable<string> {
+        return this.http.put(`${this.url}/${idProducto}`, { cantidad }, { responseType: 'text' });
+    }
+
+    eliminar(idProducto: number): Observable<string> {
+        return this.http.delete(`${this.url}/${idProducto}`, { responseType: 'text' });
+    }
 }

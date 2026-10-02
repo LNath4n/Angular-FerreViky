@@ -2,21 +2,20 @@ import { Component, inject, signal, AfterViewInit, OnDestroy } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ProductosService } from '@core/services/Producto/ProductosService';
-import { FormsModule } from '@angular/forms';
 import { GrupoPublico } from '@core/models/Producto/productoModels';
+import { LucideEye } from '@lucide/angular';
+
 
 @Component({
   selector: 'app-grupos-de-productos',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, LucideEye],
   templateUrl: './grupos-de-productos.html',
   styleUrl: './grupos-de-productos.css',
 })
 export class GruposDeProductos implements AfterViewInit, OnDestroy {
-
+  readonly LucideEye = LucideEye;
   private productosService = inject(ProductosService);
   private router = inject(Router);
-
-  textoBusqueda = '';
 
   grupos = signal<GrupoPublico[]>([]);
   cargando = signal(false);
@@ -63,14 +62,6 @@ export class GruposDeProductos implements AfterViewInit, OnDestroy {
       },
       error: () => this.cargando.set(false)
     });
-  }
-
-  get gruposFiltrados(): GrupoPublico[] {
-    const texto = this.textoBusqueda.toLowerCase().trim();
-    if (!texto) return this.grupos();
-    return this.grupos().filter(g =>
-      g.nombre.toLowerCase().includes(texto)
-    );
   }
 
   verDetalle(id: number) {

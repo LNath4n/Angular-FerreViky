@@ -1,51 +1,67 @@
-<h2>Detalle del grupo</h2>
-<p>{{ mensaje }}</p>
-
 @if (grupo$ | async; as grupo) {
-<div>
-  <p><strong>ID:</strong> {{ grupo.id }}</p>
-  <p><strong>Nombre:</strong> {{ grupo.nombre }}</p>
 
-  <h3>Productos del grupo</h3>
-
-  @if (productos$ | async; as productos) {
-    <table>
-      <thead>
-        <tr>
-          <th>Código</th>
-          <th>Descripción</th>
-          <th>Unidad</th>
-          <th>Marca</th>
-          <th>Precio (IVA inc.)</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (producto of productos; track producto.id) {
-        <tr>
-          <td>{{ producto.codigo }}</td>
-          <td>{{ producto.descripcion }}</td>
-          <td>{{ producto.unidad }}</td>
-          <td>{{ producto.marca }}</td>
-          <td>${{ producto.precioPublicoIva }}</td>
-          <td>
-            <button (click)="agregarAlCarrito(producto.id)">Agregar al Carrito</button>
-          </td>
-        </tr>
-        } @empty {
-        <tr>
-          <td colspan="6">Este grupo no tiene productos.</td>
-        </tr>
-        }
-      </tbody>
-    </table>
-  } @else {
-    <p>Cargando productos...</p>
-  }
-
+<!-- Start Hero Section -->
+<div class="hero">
+  <div class="container">
+    <div class="row justify-content-between">
+      <div class="col-lg-5">
+        <div class="intro-excerpt">
+          <h1>{{ grupo.nombre }}</h1>
+          <p class="mb-4">{{ grupo.productoIds.length }} productos en este grupo.</p>
+          <p>
+            <a class="btn btn-white-outline" style="cursor: pointer" (click)="regresar()">Regresar</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-} @else {
-<p>No se encontró información del grupo.</p>
-}
+<!-- End Hero Section -->
 
-<button (click)="regresar()">Regresar</button>
+<!-- Start Product Section -->
+<div class="product-section">
+  <div class="container">
+
+    @if (productos$ | async; as productos) {
+    <div class="row">
+
+      @for (producto of productos; track producto.id) {
+      <div class="col-12 col-md-4 col-lg-3 mb-5">
+        <a class="product-item" style="cursor: pointer" (click)="verDetalle(producto.id)">
+          <img src="images/product-1.png" class="img-fluid product-thumbnail">
+          <h3 class="product-title">{{ producto.descripcion }}</h3>
+          <p class="mb-1">{{ producto.marca }} · {{ producto.unidad }}</p>
+          <p class="mb-1">Código: {{ producto.codigo }}</p>
+          <strong class="product-price">${{ producto.precioPublicoIva }}</strong>
+
+          <span class="icon-cross" style="cursor: pointer"
+            (click)="$event.stopPropagation(); agregarAlCarrito(producto.id)">
+            <img src="images/cross.svg" class="img-fluid">
+          </span>
+        </a>
+      </div>
+      } @empty {
+      <div class="col-12 text-center">
+        <p>Este grupo no tiene productos.</p>
+      </div>
+      }
+
+    </div>
+    } @else {
+    <p class="text-center">Cargando productos...</p>
+    }
+
+  </div>
+</div>
+<!-- End Product Section -->
+
+} @else {
+
+<div class="product-section">
+  <div class="container text-center py-5">
+    <h2 class="section-title mb-3">No se encontró información del grupo</h2>
+    <button class="btn btn-primary" (click)="regresar()">Ver grupos</button>
+  </div>
+</div>
+
+}

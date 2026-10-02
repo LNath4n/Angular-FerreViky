@@ -1,0 +1,37 @@
+.login-row {
+  min-height: calc(100vh); /* alto de pantalla menos el nav */
+}
+
+/* Panel verde: hereda el verde y la tipografía del .hero de Furni */
+.login-panel {
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+}
+
+.login-panel .intro-excerpt {
+  max-width: 420px;
+}
+
+.login-dot {
+  color: #f9bf29;
+}
+
+/* Formulario */
+.login-form-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  background: #fff;
+}
+
+.login-form {
+  width: 100%;
+  max-width: 380px;
+}
+
+.login-form .form-label {
+  color: #2f2f2f;
+  font-weight: 600;
+}

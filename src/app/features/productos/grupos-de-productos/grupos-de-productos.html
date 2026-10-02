@@ -1,44 +1,52 @@
-<h2>Grupos de Productos</h2>
-
-<div>
-  <input type="text" placeholder="Buscar por nombre de grupo." [(ngModel)]="textoBusqueda">
+<!-- Start Hero Section -->
+<div class="hero">
+  <div class="container">
+    <div class="row justify-content-between">
+      <div class="col-lg-5">
+        <div class="intro-excerpt">
+          <h1>Grupos de Productos</h1>
+          <p class="mb-4">Encuentra tus productos organizados por grupo.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+<!-- End Hero Section -->
 
-<br>
+<!-- Start Product Section -->
+<div class="product-section">
+  <div class="container">
+    <div class="row">
 
-<table>
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Nombre</th>
-      <th>Productos</th>
-      <th>Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    @for (grupo of gruposFiltrados; track grupo.id) {
-    <tr>
-      <td>{{ grupo.id }}</td>
-      <td>{{ grupo.nombre }}</td>
-      <td>{{ grupo.productoIds.length }}</td>
-      <td>
-        <button (click)="verDetalle(grupo.id)">Ver detalle</button>
-      </td>
-    </tr>
-    } @empty {
-    <tr>
-      <td colspan="4">No hay grupos disponibles.</td>
-    </tr>
+      @for (grupo of grupos(); track grupo.id) {
+      <div class="col-12 col-md-4 col-lg-3 mb-5">
+        <a class="product-item" style="cursor: pointer" (click)="verDetalle(grupo.id)">
+          <img src="images/product-1.png" class="img-fluid product-thumbnail">
+          <h3 class="product-title">{{ grupo.nombre }}</h3>
+          <strong class="product-price">{{ grupo.productoIds.length }} productos</strong>
+
+          <span class="icon-cross">
+            <svg lucideEye color="#fff" [size]="20"></svg>
+          </span>
+        </a>
+      </div>
+      } @empty {
+      <div class="col-12 text-center">
+        <p>No hay grupos disponibles.</p>
+      </div>
+      }
+
+    </div>
+
+    <div style="height: 1px;"></div>
+
+    @if (cargando()) {
+    <p class="text-center">Cargando más grupos...</p>
     }
-  </tbody>
-</table>
 
-<div style="height: 1px;"></div>
-
-@if (cargando()) {
-  <p style="text-align:center">Cargando más grupos...</p>
-}
-
-@if (!hayMasPaginas && !cargando()) {
-  <p style="text-align:center">— Fin de grupos —</p>
-}
+    @if (!hayMasPaginas && !cargando()) {
+    <p class="text-center">— Fin de grupos —</p>
+    }
+  </div>
+</div>
+<!-- End Product Section -->

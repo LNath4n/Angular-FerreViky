@@ -25,37 +25,59 @@
 
   <mat-sidenav-content>
 
-    @if (isHandset$ | async) {
-    <mat-toolbar color="primary">
-      <button matIconButton (click)="drawer.toggle()">
-        <mat-icon>menu</mat-icon>
-      </button>
-      <span>FerreViky</span>
-    </mat-toolbar>
-    }
+    <!-- Start Header/Navigation -->
+    <nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="FerreViky navigation bar">
 
-    @if (!(isHandset$ | async)) {
-    <mat-toolbar color="primary">
-      <span>FerreViky</span>
-      <span class="spacer"></span>
-      <a mat-button routerLink="/productos">Productos</a>
-      <a mat-button routerLink="/grupos">Grupo de Productos</a>
+      <div class="container">
+        <a class="navbar-brand" routerLink="/">FerreViky<span>.</span></a>
 
-      @if (isLoggedIn()) {
-      <a mat-button routerLink="/carrito">Mi carrito</a>
+        <button class="navbar-toggler" type="button" aria-label="Toggle navigation" (click)="drawer.toggle()">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-      <a mat-button routerLink="/perfil">
-        <mat-icon>account_circle</mat-icon>
-      </a>
-      <button mat-icon-button (click)="logout()" matTooltip="Cerrar sesión">
-        <mat-icon>logout</mat-icon>
-      </button>
-      } @else {
-      <a mat-button routerLink="/login">Login</a>
-      <a mat-button routerLink="/registro">Registro</a>
-      }
-    </mat-toolbar>
-    }
+        <div class="collapse navbar-collapse" id="navbarsFerreViky">
+          <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+            <li class="nav-item" routerLinkActive="active">
+              <a class="nav-link" routerLink="/productos">Productos</a>
+            </li>
+            <li class="nav-item" routerLinkActive="active">
+              <a class="nav-link" routerLink="/grupos">Grupo de Productos</a>
+            </li>
+
+            @if (!isLoggedIn()) {
+            <li class="nav-item" routerLinkActive="active">
+              <a class="nav-link" routerLink="/login">Login</a>
+            </li>
+            <li class="nav-item" routerLinkActive="active">
+              <a class="nav-link" routerLink="/registro">Registro</a>
+            </li>
+            }
+          </ul>
+
+          @if (isLoggedIn()) {
+          <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+            <li>
+              <a class="nav-link" routerLink="/perfil" title="Mi perfil" aria-label="Mi perfil">
+                <svg lucideUser color="#fff" [size]="22"></svg>
+              </a>
+            </li>
+            <li>
+              <a class="nav-link" routerLink="/carrito" title="Mi carrito" aria-label="Mi carrito">
+                <svg lucideShoppingCart color="#fff" [size]="22"></svg>
+              </a>
+            </li>
+            <li>
+              <a class="nav-link" role="button" (click)="logout()" title="Cerrar sesión" aria-label="Cerrar sesión">
+                <svg lucideLogOut color="#fff" [size]="22"></svg>
+              </a>
+            </li>
+          </ul>
+          }
+        </div>
+      </div>
+
+    </nav>
+    <!-- End Header/Navigation -->
 
     <router-outlet />
 

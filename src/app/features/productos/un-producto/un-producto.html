@@ -1,17 +1,53 @@
-<h2>Detalle del producto</h2>
-<p>{{ mensaje }}</p>
+<div class="product-section">
+  <div class="container">
 
-@if (producto$ | async; as producto) {
-<div>
-  <p><strong>Código:</strong> {{ producto.codigo }}</p>
-  <p><strong>Descripción:</strong> {{ producto.descripcion }}</p>
-  <p><strong>Unidad:</strong> {{ producto.unidad }}</p>
-  <p><strong>Marca:</strong> {{ producto.marca }}</p>
-  <p><strong>Precio (IVA inc.):</strong> ${{ producto.precioPublicoIva }}</p>
-  <button (click)="agregarAlCarrito(producto.id)">Agregar al Carrito</button>
+    @if (producto$ | async; as producto) {
+    <div class="row align-items-center g-5">
+
+      <!-- Imagen (placeholder xd) -->
+      <div class="col-12 col-lg-6">
+        <div class="detalle-imagen">
+          <svg lucidePackage color="#3b5d50" [size]="96" [strokeWidth]="1.25"></svg>
+        </div>
+      </div>
+
+      <!-- Información -->
+      <div class="col-12 col-lg-6">
+        <span class="detalle-marca">{{ producto.marca }}</span>
+        <h2 class="section-title mb-3">{{ producto.descripcion }}</h2>
+
+        <strong class="product-price detalle-precio">${{ producto.precioPublicoIva }}</strong>
+        <small class="d-block mb-4">IVA incluido</small>
+
+        <dl class="detalle-datos">
+          <div>
+            <dt>Código</dt>
+            <dd>{{ producto.codigo }}</dd>
+          </div>
+          <div>
+            <dt>Unidad</dt>
+            <dd>{{ producto.unidad }}</dd>
+          </div>
+          <div>
+            <dt>Marca</dt>
+            <dd>{{ producto.marca }}</dd>
+          </div>
+        </dl>
+
+        <button class="btn btn-primary me-3" (click)="agregarAlCarrito(producto.id)">Agregar al carrito</button>
+
+        <a class="more detalle-regresar" style="cursor: pointer" (click)="regresar()">
+          <svg lucideArrowLeft [size]="16"></svg> Regresar
+        </a>
+      </div>
+
+    </div>
+    } @else {
+    <div class="text-center py-5">
+      <h2 class="section-title mb-3">No se encontró información del producto</h2>
+      <button class="btn btn-primary" (click)="regresar()">Ver productos</button>
+    </div>
+    }
+
+  </div>
 </div>
-} @else {
-<p>No se encontró información del producto.</p>
-}
-
-<button (click)="regresar()">Regresar</button>

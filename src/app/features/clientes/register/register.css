@@ -1,0 +1,49 @@
+.register-row {
+  min-height: 100vh;
+}
+
+/* Panel verde: hereda el verde y la tipografía del .hero de Furni */
+.register-panel {
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+}
+
+.register-panel .intro-excerpt {
+  max-width: 420px;
+}
+
+.register-dot {
+  color: #f9bf29;
+}
+
+/* Formulario */
+.register-form-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  background: #fff;
+}
+
+.register-form {
+  width: 100%;
+  max-width: 380px;
+}
+
+.register-form .form-label {
+  color: #2f2f2f;
+  font-weight: 600;
+}
+
+/* Por si style.css define otro verde para btn-primary */
+.register-form .btn-primary {
+  background-color: #3b5d50;
+  border-color: #3b5d50;
+  color: #fff;
+}
+
+.register-form .btn-primary:hover {
+  background-color: #2f4a40;
+  border-color: #2f4a40;
+}

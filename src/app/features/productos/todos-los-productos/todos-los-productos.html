@@ -1,51 +1,55 @@
-<h2>Productos</h2>
-
-<div>
-  <input type="text" placeholder="Buscar por descripción o marca." [(ngModel)]="textoBusqueda">
+<!-- Start Hero Section -->
+<div class="hero">
+  <div class="container">
+    <div class="row justify-content-between">
+      <div class="col-lg-5">
+        <div class="intro-excerpt">
+          <h1>Productos</h1>
+          <p class="mb-4">Encuentra tus productos favoritos.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+<!-- End Hero Section -->
 
-<br>
-<p>{{ mensaje }}</p>
+<!-- Start Product Section -->
+<div class="product-section">
+  <div class="container">
+    <div class="row">
 
-<table>
-  <thead>
-    <tr>
-      <th>Código</th>
-      <th>Descripción</th>
-      <th>Unidad</th>
-      <th>Marca</th>
-      <th>Precio (IVA inc.)</th>
-      <th>Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    @for (producto of productosFiltrados; track producto.id) {
-    <tr>
-      <td>{{ producto.codigo }}</td>
-      <td>{{ producto.descripcion }}</td>
-      <td>{{ producto.unidad }}</td>
-      <td>{{ producto.marca }}</td>
-      <td>${{ producto.precioPublicoIva }}</td>
-      <td>{{ producto.stock }}</td>
-      <td>
-        <button (click)="verDetalle(producto.id)">Ver detalle</button>
-        <button (click)="agregarAlCarrito(producto.id)">Agregar al Carrito</button>
-      </td>
-    </tr>
-    } @empty {
-    <tr>
-      <td colspan="6">No hay productos disponibles.</td>
-    </tr>
+      @for (producto of productos(); track producto.id) {
+      <div class="col-12 col-md-4 col-lg-3 mb-5">
+        <a class="product-item" style="cursor: pointer" (click)="verDetalle(producto.id)">
+          <img src="images/product-1.png" class="img-fluid product-thumbnail">
+          <h3 class="product-title">{{ producto.descripcion }}</h3>
+          <p class="mb-1">{{ producto.marca }} · {{ producto.unidad }}</p>
+          <p class="mb-1">Código: {{ producto.codigo }} · Stock: {{ producto.stock }}</p>
+          <strong class="product-price">${{ producto.precioPublicoIva }}</strong>
+
+          <span class="icon-cross" (click)="$event.stopPropagation(); agregarAlCarrito(producto.id)">
+            <img src="images/cross.svg" class="img-fluid">
+
+          </span>
+        </a>
+      </div>
+      } @empty {
+      <div class="col-12 text-center">
+        <p>No hay productos disponibles.</p>
+      </div>
+      }
+
+    </div>
+
+    <div #centinela style="height: 1px;"></div>
+
+    @if (cargando()) {
+    <p class="text-center">Cargando más productos...</p>
     }
-  </tbody>
-</table>
 
-<div #centinela style="height: 1px;"></div>
-
-@if (cargando()) {
-  <p style="text-align:center">Cargando más productos...</p>
-}
-
-@if (!hayMasPaginas && !cargando()) {
-  <p style="text-align:center">— Fin de productos —</p>
-}
+    @if (!hayMasPaginas && !cargando()) {
+    <p class="text-center">— Fin de productos —</p>
+    }
+  </div>
+</div>
+<!-- End Product Section -->

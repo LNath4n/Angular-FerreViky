@@ -1,8 +1,44 @@
-<h2>Registro</h2>
+<div class="register-page">
+  <div class="row g-0 register-row">
 
-<input type="email" [(ngModel)]="email" placeholder="Email" />
-<input type="password" [(ngModel)]="password" placeholder="Password" />
-<button (click)="registro()">Registrarse</button>
+    <!-- Formulario -->
+    <div class="col-12 col-lg-6 register-form-wrap">
+      <div class="register-form">
+        <h2 class="section-title mb-2">Crea tu cuenta</h2>
+        <p class="mb-4">Regístrate para guardar tu carrito y tu perfil.</p>
 
-<p>{{ mensaje }}</p>
-<button (click)="regresar()">Regresar</button>
+        <div class="mb-3">
+          <label class="form-label" for="email">Email</label>
+          <input id="email" type="email" class="form-control" placeholder="correo@ejemplo.com"
+            autocomplete="email" [(ngModel)]="email" />
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label" for="password">Password</label>
+          <input id="password" type="password" class="form-control" placeholder="Crea una contraseña"
+            autocomplete="new-password" [(ngModel)]="password" (keyup.enter)="registro()" />
+        </div>
+
+        <button class="btn btn-primary w-100" (click)="registro()">Registrarse</button>
+
+        <p class="text-center mt-4 mb-2">
+          ¿Ya tienes cuenta?
+          <a class="more" style="cursor: pointer" (click)="irLogin()">Inicia sesión</a>
+        </p>
+        <p class="text-center mb-0">
+          <a class="more" style="cursor: pointer" (click)="regresar()">Regresar</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Panel derecho (solo escritorio) -->
+    <div class="col-lg-6 d-none d-lg-flex hero register-panel">
+      <div class="intro-excerpt">
+        <h1>FerreViky<span class="register-dot">.</span></h1>
+        <p class="mb-4">Únete y encuentra todo para tu obra y tu hogar. Crear tu cuenta toma menos de un minuto.</p>
+        <a class="btn btn-white-outline" style="cursor: pointer" (click)="regresar()">Ver productos</a>
+      </div>
+    </div>
+
+  </div>
+</div>

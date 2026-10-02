@@ -1,7 +1,8 @@
-import { Component, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClientesService } from '@core/services/Cliente/ClientesService';
 import { AuthService } from '@core/services/Auth/auth';
+import { AlertaService } from '@core/services/Modals/ModalsService';
 import { Router } from '@angular/router';
 
 @Component({
@@ -14,25 +15,22 @@ export class Login {
 
   private clientesService = inject(ClientesService);
   private authService = inject(AuthService);
-  private cdr = inject(ChangeDetectorRef);
+  private alerta = inject(AlertaService);
   private router = inject(Router);
 
   email = '';
   password = '';
-  mensaje = '';
 
   login() {
     this.clientesService.login({ email: this.email, password: this.password })
       .subscribe({
         next: (res) => {
           this.authService.setToken(res.token);
-          this.mensaje = 'Login exitoso';
+          this.alerta.exito('Bienvenido de nuevo.', 'Login exitoso');
           this.irProductos();
         },
-        error: (err) => {
-          this.mensaje = err.error;
-          this.mensaje = 'Credenciales incorrectas';
-          this.cdr.detectChanges();
+        error: () => {
+          this.alerta.error('Credenciales incorrectas.');
         }
       });
   }

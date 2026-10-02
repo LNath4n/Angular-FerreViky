@@ -1,6 +1,7 @@
-import { Component, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClientesService } from '@core/services/Cliente/ClientesService';
+import { AlertaService } from '@core/services/Modals/ModalsService';
 import { Router } from '@angular/router';
 
 @Component({
@@ -12,25 +13,26 @@ import { Router } from '@angular/router';
 export class Register {
 
   private clientesService = inject(ClientesService);
-  private cdr = inject(ChangeDetectorRef);
+  private alerta = inject(AlertaService);
   private router = inject(Router);
 
   email = '';
   password = '';
-  mensaje = '';
 
   registro() {
     this.clientesService.create({ email: this.email, password: this.password })
       .subscribe({
-        next: (res) => {
-          this.mensaje = `Cuenta creada!`;
-          this.cdr.detectChanges();
+        next: () => {
+          this.alerta.exito('Ya puedes iniciar sesión.', '¡Cuenta creada!');
         },
-        error: (err) => {
-          this.mensaje = `Error`;
-          this.cdr.detectChanges();
+        error: () => {
+          this.alerta.error('No se pudo crear la cuenta.');
         }
       });
+  }
+
+  irLogin() {
+    this.router.navigate(['/login']);
   }
 
   regresar() {
