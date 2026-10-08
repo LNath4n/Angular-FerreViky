@@ -29,3 +29,29 @@ export interface GrupoAdmin {
   palabrasComunes: string;
   productoIds: number[];
 }
+
+export interface ProductoRequest {
+  codigo?: string;
+  clave: string; // obligatoria
+  descripcion?: string;
+  margenMercado?: string;
+  caja?: string;
+  master?: string;
+  unidad?: string;
+  ean?: string;
+  precioMayoreoIva?: number;
+  precioDistribuidorIva?: number;
+  precioPublicoIva?: number;
+  marca?: string;
+  grupoDeProductosId?: number | null;
+  stock?: number;
+}
+
+export interface ProductoAdmin extends ProductoRequest {
+  id: number;
+}
+
+export interface GrupoOpcion {
+  id: number;
+  nombre: string;
+}

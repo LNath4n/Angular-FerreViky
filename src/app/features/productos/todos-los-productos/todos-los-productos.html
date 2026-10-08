@@ -16,6 +16,25 @@
 <!-- Start Product Section -->
 <div class="product-section">
   <div class="container">
+
+    <!-- Buscador -->
+    <div class="row mb-5 justify-content-end">
+      <div class="col-12 col-lg-6">
+        <div class="buscador-barra">
+          <div class="buscador-campo">
+            <svg lucideSearch [size]="18"></svg>
+            <input type="text" class="form-control" placeholder="Buscar por descripción, código o marca."
+              name="busqueda" [(ngModel)]="textoBusqueda" (keyup.enter)="buscar()" />
+            @if (textoBusqueda) {
+            <button type="button" class="buscador-limpiar" aria-label="Limpiar búsqueda"
+              (click)="limpiarBusqueda()">&times;</button>
+            }
+          </div>
+          <button type="button" class="btn btn-primary" (click)="buscar()">Buscar</button>
+        </div>
+      </div>
+    </div>
+
     <div class="row">
 
       @for (producto of productos(); track producto.id) {
@@ -29,7 +48,6 @@
 
           <span class="icon-cross" (click)="$event.stopPropagation(); agregarAlCarrito(producto.id)">
             <img src="images/cross.svg" class="img-fluid">
-
           </span>
         </a>
       </div>
@@ -47,7 +65,7 @@
     <p class="text-center">Cargando más productos...</p>
     }
 
-    @if (!hayMasPaginas && !cargando()) {
+    @if (!hayMasPaginas && !cargando() && productos().length > 0) {
     <p class="text-center">— Fin de productos —</p>
     }
   </div>

@@ -11,13 +11,13 @@ import { map, shareReplay } from 'rxjs/operators';
 import { AuthService } from '@core/services/Auth/auth';
 import { Router } from '@angular/router';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
-import { LucideUser, LucideShoppingCart, LucideLogOut } from '@lucide/angular';
+import { LucideUser, LucideShoppingCart, LucideLogOut, LucideLayoutDashboard } from '@lucide/angular';
 
 @Component({
   selector: 'app-app-nav',
   templateUrl: './app-nav.component.html',
   styleUrls: ['./app-nav.component.css', '../../../../styles/bootstrap.min.css', '../../../../styles/style.css'],
-  imports: [RouterOutlet, RouterLink, RouterLinkActive,
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, LucideLayoutDashboard,
     MatToolbarModule,
     MatButtonModule, LucideUser, LucideShoppingCart, LucideLogOut,
     MatSidenavModule,
@@ -36,7 +36,8 @@ export class AppNavComponent {
   private breakpointObserver = inject(BreakpointObserver);
   private authService = inject(AuthService);
   private router = inject(Router);
-  isLoggedIn = this.authService.isLoggedIn();
+  isLoggedIn = this.authService.isLoggedIn;
+  isAdmin = this.authService.isAdmin;
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map((result) => result.matches),

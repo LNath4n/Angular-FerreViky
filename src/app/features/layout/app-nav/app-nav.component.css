@@ -35,4 +35,10 @@
 
 .custom-navbar-cta .nav-link:hover svg {
   opacity: 1;
+}.custom-navbar .custom-navbar-cta .nav-link.active {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.custom-navbar .custom-navbar-cta .nav-link.active svg {
+  opacity: 1;
 }

@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@core/guard/auth.guard';
+import { adminGuard } from '@core/guard/admin.guard';
+import { cambiosSinGuardarGuard } from '@core/guard/cambios-sin-guardar-guard';
 export const routes: Routes = [
   {
     path: 'login',
@@ -46,6 +48,13 @@ export const routes: Routes = [
         path: 'grupos/:id',
         loadComponent: () => import('./features/productos/grupos-de-productos-individual/grupos-de-productos-individual')
           .then(m => m.GruposDeProductosIndividual)
+      },
+      {
+        path: 'admin/productos',
+        canActivate: [adminGuard],
+        canDeactivate: [cambiosSinGuardarGuard],
+        loadComponent: () => import('./features/admin/productos/administrar-productos/administrar-productos')
+          .then(m => m.AdministrarProductos)
       },
     ]
   },

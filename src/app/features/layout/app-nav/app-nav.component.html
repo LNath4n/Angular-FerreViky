@@ -10,6 +10,9 @@
 
       @if (isLoggedIn()) {
       <a mat-list-item routerLink="/carrito" (click)="drawer.close()">Mi carrito</a>
+      @if (isAdmin()) {
+      <a mat-list-item routerLink="/admin/productos" (click)="drawer.close()">Administrar</a>
+      }
       <a mat-list-item routerLink="/perfil" (click)="drawer.close()">
         <mat-icon>account_circle</mat-icon> Mi perfil
       </a>
@@ -26,7 +29,8 @@
   <mat-sidenav-content>
 
     <!-- Start Header/Navigation -->
-    <nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="FerreViky navigation bar">
+    <nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark"
+      arial-label="FerreViky navigation bar">
 
       <div class="container">
         <a class="navbar-brand" routerLink="/">FerreViky<span>.</span></a>
@@ -56,6 +60,14 @@
 
           @if (isLoggedIn()) {
           <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+            @if (isAdmin()) {
+            <li>
+              <a class="nav-link" routerLink="/admin/productos" routerLinkActive="active" title="Administrar productos"
+                aria-label="Administrar productos">
+                <svg lucideLayoutDashboard color="#fff" [size]="22"></svg>
+              </a>
+            </li>
+            }
             <li>
               <a class="nav-link" routerLink="/perfil" title="Mi perfil" aria-label="Mi perfil">
                 <svg lucideUser color="#fff" [size]="22"></svg>

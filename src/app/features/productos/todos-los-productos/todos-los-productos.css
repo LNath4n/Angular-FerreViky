@@ -8,3 +8,46 @@
   padding: 1rem;
   border: 1px solid #ccc;
 }
+.buscador-barra {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.buscador-campo {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.buscador-campo > svg {
+  position: absolute;
+  left: 14px;
+  color: #6a6a6a;
+  pointer-events: none;
+}
+
+.buscador-campo .form-control {
+  padding-left: 42px;
+  padding-right: 36px;
+  border-radius: 30px;
+  background: #fff;
+}
+
+.buscador-limpiar {
+  position: absolute;
+  right: 12px;
+  border: 0;
+  background: none;
+  font-size: 22px;
+  line-height: 1;
+  color: #6a6a6a;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #3b5d50;
+  border-color: #3b5d50;
+  color: #fff;
+}
