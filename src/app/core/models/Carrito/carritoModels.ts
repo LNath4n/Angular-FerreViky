@@ -9,6 +9,7 @@ export interface CarritoProducto {
   clave: string;
   cantidad: number;
   precioPublicoIva: number;
+  imagenUrl: string | null;
 }
 
 export interface Carrito {

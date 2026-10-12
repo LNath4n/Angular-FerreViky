@@ -1,6 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable, forkJoin, of } from 'rxjs';
+import { LucidePackage } from '@lucide/angular';
 import { GrupoPublico, Producto } from '@core/models/Producto/productoModels';
 import { ProductosService } from '@core/services/Producto/ProductosService';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,7 +12,7 @@ import { AlertaService } from '@core/services/Modals/ModalsService';
 
 @Component({
   selector: 'app-grupos-de-productos-individual',
-  imports: [CommonModule],
+  imports: [CommonModule, LucidePackage],
   templateUrl: './grupos-de-productos-individual.html',
   styleUrl: './grupos-de-productos-individual.css',
 })
@@ -23,6 +24,8 @@ export class GruposDeProductosIndividual {
   private authService = inject(AuthService);
   private carritosService = inject(CarritosService);
   private alerta = inject(AlertaService);
+
+  private imagenesFallidas = signal<Set<number>>(new Set());
 
   id$ = this.route.paramMap.pipe(
     map(params => Number(params.get('id')))
@@ -40,6 +43,15 @@ export class GruposDeProductosIndividual {
         : of([] as Producto[])
     )
   );
+
+
+  imagenFallida(id: number): boolean {
+    return this.imagenesFallidas().has(id);
+  }
+
+  marcarImagenFallida(id: number) {
+    this.imagenesFallidas.update(s => new Set(s).add(id));
+  }
 
   agregarAlCarrito(idProducto: number) {
     if (!this.authService.getToken()) {

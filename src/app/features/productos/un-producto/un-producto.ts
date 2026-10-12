@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { map, switchMap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -23,6 +23,9 @@ export class UnProducto {
   private carritosService = inject(CarritosService);
   private alerta = inject(AlertaService);
 
+  // IDs de productos cuya imagen no existe (se muestra el ícono de paquete)
+  private imagenesFallidas = signal<Set<number>>(new Set());
+
   id$ = this.route.paramMap.pipe(
     map(params => Number(params.get('id')))
   );
@@ -30,6 +33,14 @@ export class UnProducto {
   producto$ = this.id$.pipe(
     switchMap(id => this.productosService.getById(id))
   );
+
+  imagenFallida(id: number): boolean {
+    return this.imagenesFallidas().has(id);
+  }
+
+  marcarImagenFallida(id: number) {
+    this.imagenesFallidas.update(s => new Set(s).add(id));
+  }
 
   agregarAlCarrito(idProducto: number) {
     if (!this.authService.getToken()) {

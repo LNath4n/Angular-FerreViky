@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   LucidePencil,
@@ -9,9 +9,10 @@ import {
 } from '@lucide/angular';
 import { Producto, ProductoRequest } from '@core/models/Producto/productoModels';
 import { ProductosService } from '@core/services/Producto/ProductosService';
-import { ProductoAdminService } from '@core/models/Producto/ProductoAdminService';
+import { ProductoAdminService } from '@core/services/Producto/ProductoAdminService';
 import { AlertaService } from '@core/services/Modals/ModalsService';
 import { ComponenteConCambios } from '@core/guard/cambios-sin-guardar-guard';
+import { switchMap, of, catchError, throwError } from 'rxjs';
 
 @Component({
   imports: [
@@ -26,7 +27,7 @@ import { ComponenteConCambios } from '@core/guard/cambios-sin-guardar-guard';
   styleUrl: './administrar-productos.css',
   templateUrl: './administrar-productos.html',
 })
-export class AdministrarProductos implements OnInit, ComponenteConCambios {
+export class AdministrarProductos implements OnInit, OnDestroy, ComponenteConCambios {
   private productosService = inject(ProductosService);
   private adminService = inject(ProductoAdminService);
   private alerta = inject(AlertaService);
@@ -37,7 +38,14 @@ export class AdministrarProductos implements OnInit, ComponenteConCambios {
   form: ProductoRequest = { clave: '' };
   private inicial = JSON.stringify(this.form);
 
-  // --- Búsqueda y paginación 
+  // --- Imagen ---
+  private readonly maxBytesImagen = 5 * 1024 * 1024; // igual que spring.servlet.multipart.max-file-size
+  archivoImagen: File | null = null;
+  vistaPrevia = signal<string | null>(null); // URL actual del producto o blob local
+  inputKey = signal(0);                      // cambia para recrear el <input type="file"> y limpiarlo
+  private blobUrl: string | null = null;
+
+  // --- Búsqueda y paginación ---
   private readonly tamanoPagina = 5;
   textoBusqueda = '';
   paginaActual = signal(0); // base 0
@@ -52,9 +60,12 @@ export class AdministrarProductos implements OnInit, ComponenteConCambios {
     return Array.from({ length: fin - inicio }, (_, i) => inicio + i);
   });
 
-
   ngOnInit() {
     this.cargar();
+  }
+
+  ngOnDestroy() {
+    this.liberarBlob();
   }
 
   cargar() {
@@ -79,12 +90,10 @@ export class AdministrarProductos implements OnInit, ComponenteConCambios {
     this.buscar();
   }
 
-
   buscar() {
     this.paginaActual.set(0);
     this.cargar();
   }
-
 
   irAPagina(pagina: number) {
     if (pagina < 0 || pagina >= this.totalPaginas()) return;
@@ -92,13 +101,53 @@ export class AdministrarProductos implements OnInit, ComponenteConCambios {
     this.cargar();
   }
 
+  onArchivoSeleccionado(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const archivo = input.files?.[0] ?? null;
+
+    if (archivo && !archivo.type.startsWith('image/')) {
+      this.alerta.error('El archivo debe ser una imagen.');
+      input.value = '';
+      return;
+    }
+    if (archivo && archivo.size > this.maxBytesImagen) {
+      this.alerta.error('La imagen no debe pasar de 5 MB.');
+      input.value = '';
+      return;
+    }
+
+    this.liberarBlob();
+    this.archivoImagen = archivo;
+    if (archivo) {
+      this.blobUrl = URL.createObjectURL(archivo);
+      this.vistaPrevia.set(this.blobUrl);
+    }
+  }
+
   guardar() {
     const id = this.editandoId();
-    const peticion = id !== null
+    const archivo = this.archivoImagen;
+
+    const guardarDatos$ = id !== null
       ? this.adminService.editar(id, this.form)
       : this.adminService.crear(this.form);
 
-    peticion.subscribe({
+    guardarDatos$.pipe(
+      switchMap(producto => {
+        if (!archivo) return of(null);
+
+        return this.adminService.subirImagen(producto.id, archivo).pipe(
+          catchError(err => {
+            // El producto ya existe: pasa a modo edición para que reintentar no lo duplique
+            this.editandoId.set(producto.id);
+            this.inicial = JSON.stringify(this.form);
+            this.cargar();
+            this.alerta.advertencia('El producto se guardó, pero la imagen no se pudo subir. Vuelve a intentarlo.');
+            return throwError(() => err);
+          })
+        );
+      })
+    ).subscribe({
       next: () => {
         this.alerta.exito(id !== null ? 'Producto actualizado.' : 'Producto creado.');
         this.cancelar();
@@ -110,9 +159,10 @@ export class AdministrarProductos implements OnInit, ComponenteConCambios {
 
   editar(p: Producto) {
     this.adminService.obtener(p.id).subscribe({
-      next: ({ id, ...datos }) => {
+      next: ({ id, imagenUrl, ...datos }) => {
         this.editandoId.set(id);
         this.reiniciarForm(datos);
+        this.reiniciarImagen(imagenUrl);
       },
       error: err => this.mostrarError(err, 'No se pudo cargar el producto'),
     });
@@ -123,6 +173,7 @@ export class AdministrarProductos implements OnInit, ComponenteConCambios {
     this.adminService.borrar(id).subscribe({
       next: () => {
         this.alerta.exito('Producto borrado.');
+        if (this.editandoId() === id) this.cancelar();
         this.cargar();
       },
       error: err => this.mostrarError(err, 'No se pudo borrar el producto'),
@@ -132,10 +183,11 @@ export class AdministrarProductos implements OnInit, ComponenteConCambios {
   cancelar() {
     this.editandoId.set(null);
     this.reiniciarForm({ clave: '' });
+    this.reiniciarImagen(null);
   }
 
   hayCambiosSinGuardar(): boolean {
-    return JSON.stringify(this.form) !== this.inicial;
+    return JSON.stringify(this.form) !== this.inicial || this.archivoImagen !== null;
   }
 
   private reiniciarForm(valor: ProductoRequest) {
@@ -143,9 +195,21 @@ export class AdministrarProductos implements OnInit, ComponenteConCambios {
     this.inicial = JSON.stringify(valor);
   }
 
+  private reiniciarImagen(urlActual: string | null) {
+    this.liberarBlob();
+    this.archivoImagen = null;
+    this.vistaPrevia.set(urlActual);
+    this.inputKey.update(k => k + 1); // recrea el input y borra el nombre del archivo
+  }
+
+  private liberarBlob() {
+    if (this.blobUrl) {
+      URL.revokeObjectURL(this.blobUrl);
+      this.blobUrl = null;
+    }
+  }
+
   private mostrarError(err: any, mensajeDefault: string) {
     this.alerta.error(typeof err.error === 'string' ? err.error : mensajeDefault);
   }
-
-
 }

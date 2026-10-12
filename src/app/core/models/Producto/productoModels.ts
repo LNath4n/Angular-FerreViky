@@ -5,14 +5,15 @@ export interface Producto {
   unidad: string;
   marca: string;
   precioPublicoIva: number;
-  stock:number;
+  imagenUrl: string | null;
+  stock: number;
 }
 
 export interface PageResponse<T> {
   content: T[];
   totalPages: number;
   totalElements: number;
-  number: number;   
+  number: number;
   size: number;
 }
 
@@ -20,6 +21,7 @@ export interface GrupoPublico {
   id: number;
   nombre: string;
   productoIds: number[];
+  imagenUrls: string[];
 }
 
 export interface GrupoAdmin {
@@ -49,6 +51,7 @@ export interface ProductoRequest {
 
 export interface ProductoAdmin extends ProductoRequest {
   id: number;
+  imagenUrl: string | null;
 }
 
 export interface GrupoOpcion {

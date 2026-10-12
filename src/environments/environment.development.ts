@@ -1,8 +1,6 @@
+// environment.development.ts
 export const environment = {
-  production: true,
-    apiUrl: 'http://localhost:8080'
+  production: false,
+  apiUrl: 'http://3.85.244.155',
+  imagesUrl: 'http://localhost:3000/images'
 };
-
-// apiUrl: 'http://localhost:8080'
-//  apiUrl: 'https://spring-ferreviky.onrender.com'
-//  apiUrl: 'http://98.93.70.180'

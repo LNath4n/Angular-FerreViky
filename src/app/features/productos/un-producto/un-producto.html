@@ -4,10 +4,15 @@
     @if (producto$ | async; as producto) {
     <div class="row align-items-center g-5">
 
-      <!-- Imagen (placeholder xd) -->
+      <!-- Imagen -->
       <div class="col-12 col-lg-6">
         <div class="detalle-imagen">
+          @if (!imagenFallida(producto.id)) {
+          <img [src]="producto.imagenUrl" [alt]="producto.descripcion"
+            class="img-fluid" (error)="marcarImagenFallida(producto.id)">
+          } @else {
           <svg lucidePackage color="#3b5d50" [size]="96" [strokeWidth]="1.25"></svg>
+          }
         </div>
       </div>
 

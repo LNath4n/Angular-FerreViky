@@ -21,7 +21,15 @@
       @for (grupo of grupos(); track grupo.id) {
       <div class="col-12 col-md-4 col-lg-3 mb-5">
         <a class="product-item" style="cursor: pointer" (click)="verDetalle(grupo.id)">
-          <img src="images/product-1.png" class="img-fluid product-thumbnail">
+
+          @if (imagenActual(grupo); as url) {
+          <img [src]="url" [alt]="grupo.nombre" class="img-fluid product-thumbnail" (error)="marcarImagenFallida(url)">
+          } @else {
+          <div class="product-thumbnail d-flex justify-content-center align-items-center mb-3">
+            <svg lucidePackage color="#3b5d50" [size]="96" [strokeWidth]="1.25"></svg>
+          </div>
+          }
+
           <h3 class="product-title">{{ grupo.nombre }}</h3>
           <strong class="product-price">{{ grupo.productoIds.length }} productos</strong>
 

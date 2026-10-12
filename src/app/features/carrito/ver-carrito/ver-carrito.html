@@ -39,7 +39,12 @@
               @for (item of carrito.productos; track item.productoId) {
               <tr>
                 <td class="product-thumbnail">
-                  <img src="images/product-1.png" alt="Imagen" class="img-fluid">
+                  @if (item.imagenUrl && !imagenFallida(item.productoId)) {
+                  <img [src]="item.imagenUrl" [alt]="item.descripcion" class="img-fluid"
+                    (error)="marcarImagenFallida(item.productoId)">
+                  } @else {
+                  <svg lucidePackage color="#3b5d50" [size]="48" [strokeWidth]="1.25"></svg>
+                  }
                 </td>
                 <td class="product-name">
                   <h2 class="h5 text-black">{{ item.descripcion }}</h2>
@@ -49,11 +54,11 @@
                 <td>
                   <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
                     <div class="input-group-prepend">
-                      <button class="btn btn-outline-black decrease" type="button"
-                        [disabled]="item.cantidad <= 1" (click)="cambiarCantidad(item, -1)">&minus;</button>
+                      <button class="btn btn-outline-black decrease" type="button" [disabled]="item.cantidad <= 1"
+                        (click)="cambiarCantidad(item, -1)">&minus;</button>
                     </div>
-                    <input type="text" class="form-control text-center quantity-amount"
-                      [value]="item.cantidad" readonly aria-label="Cantidad">
+                    <input type="text" class="form-control text-center quantity-amount" [value]="item.cantidad" readonly
+                      aria-label="Cantidad">
                     <div class="input-group-append">
                       <button class="btn btn-outline-black increase" type="button"
                         (click)="cambiarCantidad(item, 1)">&plus;</button>

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { LucideSearch } from '@lucide/angular';
+import { LucidePackage, LucideSearch } from '@lucide/angular';
 import { ProductosService } from '@core/services/Producto/ProductosService';
 import { CarritosService } from '@core/services/Carrito/CarritosService';
 import { AuthService } from '@core/services/Auth/auth';
@@ -12,7 +12,7 @@ import { AlertaService } from '@core/services/Modals/ModalsService';
 
 @Component({
   selector: 'app-todos-los-productos',
-  imports: [CommonModule, FormsModule, LucideSearch],
+  imports: [CommonModule, FormsModule, LucideSearch, LucidePackage],
   templateUrl: './todos-los-productos.html',
   styleUrl: './todos-los-productos.css',
 })
@@ -33,6 +33,9 @@ export class TodosLosProductos implements AfterViewInit, OnDestroy {
   textoBusqueda = '';              // lo que el usuario está escribiendo
   private busquedaActiva = '';     // lo que realmente se buscó (para las páginas siguientes)
   private peticion?: Subscription;
+
+  // IDs de productos cuya imagen no existe (se muestra el ícono de paquete)
+  private imagenesFallidas = signal<Set<number>>(new Set());
 
   private scrollListener!: () => void;
   private sidenavContent!: Element;
@@ -93,6 +96,15 @@ export class TodosLosProductos implements AfterViewInit, OnDestroy {
   limpiarBusqueda() {
     this.textoBusqueda = '';
     this.buscar();
+  }
+
+
+  imagenFallida(id: number): boolean {
+    return this.imagenesFallidas().has(id);
+  }
+
+  marcarImagenFallida(id: number) {
+    this.imagenesFallidas.update(s => new Set(s).add(id));
   }
 
   verDetalle(id: number) {

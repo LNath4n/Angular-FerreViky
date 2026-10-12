@@ -40,7 +40,16 @@
       @for (producto of productos(); track producto.id) {
       <div class="col-12 col-md-4 col-lg-3 mb-5">
         <a class="product-item" style="cursor: pointer" (click)="verDetalle(producto.id)">
-          <img src="images/product-1.png" class="img-fluid product-thumbnail">
+
+          @if (producto.imagenUrl && !imagenFallida(producto.id)) {
+          <img [src]="producto.imagenUrl" [alt]="producto.descripcion" class="img-fluid product-thumbnail"
+            loading="lazy" (error)="marcarImagenFallida(producto.id)">
+          } @else {
+          <div class="product-thumbnail d-flex justify-content-center align-items-center mb-3">
+            <svg lucidePackage color="#3b5d50" [size]="96" [strokeWidth]="1.25"></svg>
+          </div>
+          }
+
           <h3 class="product-title">{{ producto.descripcion }}</h3>
           <p class="mb-1">{{ producto.marca }} · {{ producto.unidad }}</p>
           <p class="mb-1">Código: {{ producto.codigo }} · Stock: {{ producto.stock }}</p>
