@@ -1,6 +1,6 @@
 // environment.ts (producción)
 export const environment = {
   production: true,
-  apiUrl: 'http://3.85.244.155',
+  apiUrl: 'http://34.232.160.22',
   imagesUrl: 'https://nathan-demo-ecommerce.s3.us-east-1.amazonaws.com/images'
 };

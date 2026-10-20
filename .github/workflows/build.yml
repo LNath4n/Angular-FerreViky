@@ -1,0 +1,42 @@
+name: Deploy frontend
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  BUCKET: ferreviky-frontend-181194339446
+  DIST_ID: E1NJYCWYCAWWN6
+  OUTPUT_DIR: dist/Angular-FerreViky/browser
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::181194339446:role/github-actions-frontend
+          aws-region: us-east-1
+
+      - name: Subir archivos con caché larga
+        run: aws s3 sync $OUTPUT_DIR s3://$BUCKET --delete --exclude index.html --cache-control "public,max-age=31536000,immutable"
+
+      - name: Subir index.html sin caché
+        run: aws s3 cp $OUTPUT_DIR/index.html s3://$BUCKET/index.html --cache-control "no-cache"
+
+      - name: Invalidar CloudFront
+        run: aws cloudfront create-invalidation --distribution-id $DIST_ID --paths "/index.html"
