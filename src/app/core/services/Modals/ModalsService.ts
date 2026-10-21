@@ -9,10 +9,18 @@ export interface Alerta {
   texto: string;
 }
 
+export interface Confirmacion {
+  titulo: string;
+  texto: string;
+  textoAceptar: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AlertaService {
   readonly alertas = signal<Alerta[]>([]);
+  readonly confirmacion = signal<Confirmacion | null>(null);
   private contador = 0;
+  private resolverConfirmacion: ((confirmada: boolean) => void) | null = null;
 
   private mostrar(tipo: TipoAlerta, titulo: string, texto: string, duracionMs = 4000) {
     const id = ++this.contador;
@@ -30,6 +38,26 @@ export class AlertaService {
 
   advertencia(texto: string, titulo = 'Atención') {
     this.mostrar('advertencia', titulo, texto);
+  }
+
+  solicitarConfirmacion(
+    titulo: string,
+    texto: string,
+    textoAceptar = 'Confirmar'
+  ): Promise<boolean> {
+    this.resolverConfirmacion?.(false);
+    this.confirmacion.set({ titulo, texto, textoAceptar });
+
+    return new Promise(resolve => {
+      this.resolverConfirmacion = resolve;
+    });
+  }
+
+  responderConfirmacion(confirmada: boolean) {
+    const resolver = this.resolverConfirmacion;
+    this.resolverConfirmacion = null;
+    this.confirmacion.set(null);
+    resolver?.(confirmada);
   }
 
   cerrar(id: number) {

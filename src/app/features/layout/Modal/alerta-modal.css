@@ -62,3 +62,38 @@
   from { opacity: 0; transform: translateX(40px); }
   to   { opacity: 1; transform: translateX(0); }
 }
+
+.confirmacion-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2100;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgb(0 0 0 / 50%);
+}
+
+.confirmacion-modal {
+  width: min(100%, 440px);
+  padding: 1.75rem;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 20%);
+}
+
+.confirmacion-modal h2 {
+  margin-bottom: 0.75rem;
+  color: #2f2f2f;
+  font-size: 1.25rem;
+}
+
+.confirmacion-modal p {
+  margin-bottom: 1.5rem;
+  color: #6a6a6a;
+}
+
+.confirmacion-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}

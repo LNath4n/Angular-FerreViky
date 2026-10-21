@@ -12,80 +12,35 @@
 
 <div class="untree_co-section before-footer-section">
   <div class="container">
-    @if (cargando) {
+    @if (cargando()) {
       <p class="text-center py-5">Cargando tu perfil...</p>
-    } @else if (perfil) {
-      <div class="row g-5">
-        <div class="col-lg-4">
+    } @else if (perfil(); as perfilActual) {
+      <div class="row g-4">
+        <div class="col-12 col-lg-4">
           <section class="profile-card text-center">
-            @if (perfil.fotoUrl) {
-              <img class="profile-photo" [src]="perfil.fotoUrl" alt="Foto de perfil">
+            @if (fotoVistaPrevia() || perfilActual.fotoUrl; as fotoUrl) {
+              <img class="profile-photo" [src]="fotoUrl" alt="Foto de perfil">
             } @else {
               <div class="profile-photo profile-photo-placeholder" aria-label="Sin foto de perfil">
-                {{ perfil.nombre.charAt(0).toUpperCase() }}
+                <svg lucideUser color="#fff" [size]="112" [strokeWidth]="1.5"></svg>
               </div>
             }
 
-            <h2 class="h4 mt-3 mb-1">{{ perfil.nombre }}</h2>
-            <p class="text-muted mb-4">{{ perfil.email }}</p>
+            <h2 class="h4 mt-3 mb-1">{{ perfilActual.nombre }}</h2>
+            <p class="text-muted mb-4">{{ perfilActual.email }}</p>
 
             <label class="btn btn-primary w-100" for="fotoPerfil">
-              {{ procesandoFoto ? 'Procesando...' : 'Cambiar foto' }}
+              {{ procesandoFoto() ? 'Subiendo foto...' : confirmandoFoto() ? 'Foto seleccionada' : 'Seleccionar foto' }}
             </label>
             <input id="fotoPerfil" class="visually-hidden" type="file" accept="image/png,image/jpeg"
-              [disabled]="procesandoFoto" (change)="seleccionarFoto($event)">
+              [disabled]="procesandoFoto() || confirmandoFoto()" (change)="seleccionarFoto($event)">
 
-            @if (perfil.fotoUrl) {
+            @if (perfilActual.fotoUrl && !fotoVistaPrevia()) {
               <button class="btn btn-outline-secondary w-100 mt-2" type="button"
-                [disabled]="procesandoFoto" (click)="quitarFoto()">
+                [disabled]="procesandoFoto()" (click)="quitarFoto()">
                 Quitar foto
               </button>
             }
-          </section>
-        </div>
-
-        <div class="col-lg-8">
-          <section class="profile-card">
-            <h2 class="h4 section-title mb-4">Datos de la cuenta</h2>
-            <form (ngSubmit)="guardarCambios()">
-              <div class="mb-3">
-                <label class="form-label" for="nombre">Nombre</label>
-                <input id="nombre" name="nombre" class="form-control" type="text"
-                  [(ngModel)]="nombre" required [disabled]="guardando">
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label" for="email">Correo electrónico</label>
-                <input id="email" name="email" class="form-control" type="email"
-                  [(ngModel)]="email" required [disabled]="guardando">
-              </div>
-
-              <div class="mb-4">
-                <label class="form-label" for="telefono">Teléfono</label>
-                <input id="telefono" name="telefono" class="form-control" type="tel"
-                  [(ngModel)]="telefono" required [disabled]="guardando">
-              </div>
-
-              <hr class="my-4">
-              <h3 class="h5 mb-3">Cambiar contraseña</h3>
-              <p class="text-muted">Deja estos campos vacíos si no deseas cambiarla.</p>
-
-              <div class="mb-3">
-                <label class="form-label" for="passwordVieja">Contraseña actual</label>
-                <input id="passwordVieja" name="passwordVieja" class="form-control" type="password"
-                  autocomplete="current-password" [(ngModel)]="passwordVieja" [disabled]="guardando">
-              </div>
-
-              <div class="mb-4">
-                <label class="form-label" for="passwordNueva">Nueva contraseña</label>
-                <input id="passwordNueva" name="passwordNueva" class="form-control" type="password"
-                  autocomplete="new-password" [(ngModel)]="passwordNueva" [disabled]="guardando">
-              </div>
-
-              <button class="btn btn-primary" type="submit" [disabled]="guardando">
-                {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
-              </button>
-            </form>
           </section>
 
           <section class="profile-card danger-zone mt-4">
@@ -95,6 +50,54 @@
               Desactivar mi cuenta
             </button>
           </section>
+        </div>
+
+        <div class="col-12 col-lg-8">
+          <section class="profile-card">
+            <h2 class="h4 section-title mb-4">Datos de la cuenta</h2>
+            <form (ngSubmit)="guardarCambios()">
+              <div class="mb-3">
+                <label class="form-label" for="nombre">Nombre</label>
+                <input id="nombre" name="nombre" class="form-control" type="text"
+                  [ngModel]="nombre()" (ngModelChange)="nombre.set($event)" required [disabled]="guardando()">
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label" for="email">Correo electrónico</label>
+                <input id="email" name="email" class="form-control" type="email"
+                  [ngModel]="email()" (ngModelChange)="email.set($event)" required [disabled]="guardando()">
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label" for="telefono">Teléfono</label>
+                <input id="telefono" name="telefono" class="form-control" type="tel"
+                  [ngModel]="telefono()" (ngModelChange)="telefono.set($event)" required [disabled]="guardando()">
+              </div>
+
+              <hr class="my-4">
+              <h3 class="h5 mb-3">Cambiar contraseña</h3>
+              <p class="text-muted">Deja estos campos vacíos si no deseas cambiarla.</p>
+
+              <div class="mb-3">
+                <label class="form-label" for="passwordVieja">Contraseña actual</label>
+                <input id="passwordVieja" name="passwordVieja" class="form-control" type="password"
+                  autocomplete="current-password" [ngModel]="passwordVieja()"
+                  (ngModelChange)="passwordVieja.set($event)" [disabled]="guardando()">
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label" for="passwordNueva">Nueva contraseña</label>
+                <input id="passwordNueva" name="passwordNueva" class="form-control" type="password"
+                  autocomplete="new-password" [ngModel]="passwordNueva()"
+                  (ngModelChange)="passwordNueva.set($event)" [disabled]="guardando()">
+              </div>
+
+              <button class="btn btn-primary" type="submit" [disabled]="guardando()">
+                {{ guardando() ? 'Guardando...' : 'Guardar cambios' }}
+              </button>
+            </form>
+          </section>
+
         </div>
       </div>
     } @else {

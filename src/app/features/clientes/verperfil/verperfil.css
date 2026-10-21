@@ -5,6 +5,12 @@
   background: #fff;
 }
 
+.profile-layout {
+  max-width: 960px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
 .profile-photo {
   display: block;
   width: 150px;

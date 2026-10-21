@@ -21,3 +21,19 @@
   </div>
   }
 </div>
+
+@if (confirmacion(); as modal) {
+  <div class="confirmacion-backdrop" (click)="responderConfirmacion(false)">
+    <section class="confirmacion-modal" role="dialog" aria-modal="true"
+      aria-labelledby="confirmacion-titulo" (click)="$event.stopPropagation()">
+      <h2 id="confirmacion-titulo">{{ modal.titulo }}</h2>
+      <p>{{ modal.texto }}</p>
+      <div class="confirmacion-acciones">
+        <button type="button" class="btn btn-outline-secondary"
+          (click)="responderConfirmacion(false)">Cancelar</button>
+        <button type="button" class="btn btn-primary"
+          (click)="responderConfirmacion(true)">{{ modal.textoAceptar }}</button>
+      </div>
+    </section>
+  </div>
+}
