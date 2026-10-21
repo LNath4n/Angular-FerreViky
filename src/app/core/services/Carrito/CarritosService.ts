@@ -14,7 +14,7 @@ export class CarritosService {
     agregar(dto: AgregarCarrito): Observable<string> {
         return this.http.post(`${this.url}`, dto, { responseType: 'text' });
     }
-
+ 
     obtenerCarrito(): Observable<Carrito> {
         return this.http.get<Carrito>(`${this.url}`);
     }

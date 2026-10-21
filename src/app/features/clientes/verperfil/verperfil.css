@@ -1,0 +1,33 @@
+.profile-card {
+  padding: 2rem;
+  border: 1px solid #e5e5e5;
+  border-radius: 0.5rem;
+  background: #fff;
+}
+
+.profile-photo {
+  display: block;
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-photo-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #3b5d50;
+  color: #fff;
+  font-size: 3rem;
+}
+
+.profile-card .form-label {
+  color: #2f2f2f;
+  font-weight: 600;
+}
+
+.danger-zone {
+  border-color: #dc3545;
+}

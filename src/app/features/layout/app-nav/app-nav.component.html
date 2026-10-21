@@ -13,7 +13,7 @@
       @if (isAdmin()) {
       <a mat-list-item routerLink="/admin/productos" (click)="drawer.close()">Administrar</a>
       }
-      <a mat-list-item routerLink="/perfil" (click)="drawer.close()">
+      <a mat-list-item routerLink="/perfil" routerLinkActive="active" (click)="drawer.close()">
         <mat-icon>account_circle</mat-icon> Mi perfil
       </a>
       <a mat-list-item (click)="logout(); drawer.close()">
@@ -69,7 +69,7 @@
             </li>
             }
             <li>
-              <a class="nav-link" routerLink="/perfil" title="Mi perfil" aria-label="Mi perfil">
+              <a class="nav-link" routerLink="/perfil" routerLinkActive="active" title="Mi perfil" aria-label="Mi perfil">
                 <svg lucideUser color="#fff" [size]="22"></svg>
               </a>
             </li>

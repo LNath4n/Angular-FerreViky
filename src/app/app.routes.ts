@@ -45,6 +45,12 @@ export const routes: Routes = [
           .then(m => m.VerCarrito)
       },
       {
+        path: 'perfil',
+        canActivate: [authGuard],
+        loadComponent: () => import('./features/clientes/verperfil/verperfil')
+          .then(m => m.Verperfil)
+      },
+      {
         path: 'grupos/:id',
         loadComponent: () => import('./features/productos/grupos-de-productos-individual/grupos-de-productos-individual')
           .then(m => m.GruposDeProductosIndividual)
