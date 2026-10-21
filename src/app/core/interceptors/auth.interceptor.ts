@@ -16,8 +16,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authReq = token && !esRutaAuth
     ? req.clone({
       setHeaders: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
+        Authorization: `Bearer ${token}`
       }
     })
     : req;
