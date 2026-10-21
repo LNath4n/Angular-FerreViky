@@ -15,9 +15,9 @@
     @if (cargando()) {
       <p class="text-center py-5">Cargando tu perfil...</p>
     } @else if (perfil(); as perfilActual) {
-      <div class="row g-4">
-        <div class="col-12 col-lg-4">
-          <section class="profile-card text-center">
+      <div class="row g-4 profile-row">
+        <div class="col-12 col-lg-4 profile-column">
+          <section class="profile-card text-center profile-summary">
             @if (fotoVistaPrevia() || perfilActual.fotoUrl; as fotoUrl) {
               <img class="profile-photo" [src]="fotoUrl" alt="Foto de perfil">
             } @else {
@@ -52,7 +52,7 @@
           </section>
         </div>
 
-        <div class="col-12 col-lg-8">
+        <div class="col-12 col-lg-8 profile-details-column">
           <section class="profile-card">
             <h2 class="h4 section-title mb-4">Datos de la cuenta</h2>
             <form (ngSubmit)="guardarCambios()">

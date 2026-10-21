@@ -39,6 +39,10 @@ export class Login {
     this.router.navigate(['/productos']);
   }
 
+  irRegistro() {
+    this.router.navigate(['/registro']);
+  }
+
   regresar() {
     this.router.navigate(['/']);
   }
