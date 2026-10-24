@@ -1,11 +1,15 @@
 <!-- Start Hero Section -->
-<div class="hero">
+<div class="hero productos-hero">
   <div class="container">
     <div class="row justify-content-between">
       <div class="col-lg-5">
         <div class="intro-excerpt">
           <h1>Productos</h1>
-          <p class="mb-4">Encuentra tus productos favoritos.</p>
+          @if (isLoggedIn() && nombreUsuario()) {
+          <p class="mb-4">¡Hola, {{ nombreUsuario() }}! Encuentra tus productos favoritos.</p>
+          } @else {
+          <p class="mb-4">¡Bienvenido a FerreViky! Encuentra tus productos favoritos.</p>
+          }
         </div>
       </div>
     </div>
@@ -23,7 +27,7 @@
         <div class="buscador-barra">
           <div class="buscador-campo">
             <svg lucideSearch [size]="18"></svg>
-            <input type="text" class="form-control" placeholder="Buscar por descripción, código o marca."
+            <input type="text" class="form-control" placeholder="Buscar por nombre, SKU, plataforma o descripción."
               name="busqueda" [(ngModel)]="textoBusqueda" (keyup.enter)="buscar()" />
             @if (textoBusqueda) {
             <button type="button" class="buscador-limpiar" aria-label="Limpiar búsqueda"
@@ -39,10 +43,10 @@
 
       @for (producto of productos(); track producto.id) {
       <div class="col-12 col-md-4 col-lg-3 mb-5">
-        <a class="product-item" style="cursor: pointer" (click)="verDetalle(producto.id)">
+        <a class="product-item" style="cursor: pointer" (click)="verDetalle(producto.slug)">
 
           @if (producto.imagenUrl && !imagenFallida(producto.id)) {
-          <img [src]="producto.imagenUrl" [alt]="producto.descripcion" class="img-fluid product-thumbnail"
+          <img [src]="producto.imagenUrl" [alt]="producto.nombre" class="img-fluid product-thumbnail"
             loading="lazy" (error)="marcarImagenFallida(producto.id)">
           } @else {
           <div class="product-thumbnail d-flex justify-content-center align-items-center mb-3">
@@ -50,10 +54,13 @@
           </div>
           }
 
-          <h3 class="product-title">{{ producto.descripcion }}</h3>
-          <p class="mb-1">{{ producto.marca }} · {{ producto.unidad }}</p>
-          <p class="mb-1">Código: {{ producto.codigo }} · Stock: {{ producto.stock }}</p>
-          <strong class="product-price">${{ producto.precioPublicoIva }}</strong>
+          <h3 class="product-title">{{ producto.nombre }}</h3>
+          @if (producto.descripcion) {
+          <p class="mb-1">{{ producto.descripcion }}</p>
+          }
+          <p class="mb-1">{{ producto.plataforma || producto.tipo }} · {{ producto.region || 'Global' }}</p>
+          <p class="mb-1">SKU: {{ producto.sku }} · Stock: {{ producto.stock }}</p>
+          <strong class="product-price">${{ producto.precioVenta }}</strong>
 
           <span class="icon-cross" (click)="$event.stopPropagation(); agregarAlCarrito(producto.id)">
             <img src="images/cross.svg" class="img-fluid">

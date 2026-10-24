@@ -11,6 +11,7 @@ import { AlertaService } from '@core/services/Modals/ModalsService';
 export class AlertaModal {
   private alertaService = inject(AlertaService);
   alertas = this.alertaService.alertas;
+  alertasCerrando = this.alertaService.alertasCerrando;
   confirmacion = this.alertaService.confirmacion;
 
   cerrar(id: number) {

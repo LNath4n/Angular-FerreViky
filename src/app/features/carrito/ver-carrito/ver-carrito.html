@@ -19,8 +19,6 @@
 
     @if (carrito && carrito.productos.length > 0) {
 
-    <p class="mb-4">Cliente: <strong>{{ carrito.emailCliente }}</strong></p>
-
     <div class="row mb-5">
       <div class="col-md-12">
         <div class="site-blocks-table table-responsive">
@@ -40,17 +38,17 @@
               <tr>
                 <td class="product-thumbnail">
                   @if (item.imagenUrl && !imagenFallida(item.productoId)) {
-                  <img [src]="item.imagenUrl" [alt]="item.descripcion" class="img-fluid"
+                  <img [src]="item.imagenUrl" [alt]="item.nombre" class="img-fluid"
                     (error)="marcarImagenFallida(item.productoId)">
                   } @else {
                   <svg lucidePackage color="#3b5d50" [size]="48" [strokeWidth]="1.25"></svg>
                   }
                 </td>
                 <td class="product-name">
-                  <h2 class="h5 text-black">{{ item.descripcion }}</h2>
-                  <small>{{ item.clave }}</small>
+                  <h2 class="h5 text-black">{{ item.nombre }}</h2>
+                  <small>{{ item.sku }}</small>
                 </td>
-                <td>{{ item.precioPublicoIva | currency:'MXN' }}</td>
+                <td>{{ item.precioVenta | currency:'MXN' }}</td>
                 <td>
                   <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
                     <div class="input-group-prepend">
@@ -65,9 +63,9 @@
                     </div>
                   </div>
                 </td>
-                <td>{{ item.cantidad * item.precioPublicoIva | currency:'MXN' }}</td>
+                <td>{{ item.cantidad * item.precioVenta | currency:'MXN' }}</td>
                 <td>
-                  <button type="button" class="btn btn-black btn-sm" aria-label="Quitar del carrito"
+                  <button type="button" class="btn-quitar-carrito" aria-label="Quitar del carrito"
                     (click)="eliminar(item.productoId)">
                     <svg lucideTrash2 color="#fff" [size]="16"></svg>
                   </button>

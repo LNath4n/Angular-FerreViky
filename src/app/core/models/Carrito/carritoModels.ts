@@ -3,18 +3,24 @@ export interface AgregarCarrito {
   cantidad: number;
 }
 
+export interface ActualizarCantidad {
+  idProducto: number;
+  cantidad: number;
+}
+
 export interface CarritoProducto {
   productoId: number;
-  descripcion: string;
-  clave: string;
+  slug: string;
+  nombre: string;
+  sku: string;
+  plataforma: string | null;
   cantidad: number;
-  precioPublicoIva: number;
+  precioVenta: number;
   imagenUrl: string | null;
 }
 
 export interface Carrito {
   id: number;
-  emailCliente: string;
   productos: CarritoProducto[];
   fechaCreacion: string;
   subtotal: number;

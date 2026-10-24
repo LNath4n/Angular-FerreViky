@@ -1,4 +1,5 @@
 import { Component, inject, signal, computed, OnInit, OnDestroy } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import {
   LucidePencil,
@@ -6,10 +7,16 @@ import {
   LucideSearch,
   LucideChevronLeft,
   LucideChevronRight,
+  LucideImageOff,
 } from '@lucide/angular';
-import { Producto, ProductoRequest } from '@core/models/Producto/productoModels';
+import {
+  CategoriaOpcionResponse,
+  ProductoPublicoResponse,
+  ProductoRequest,
+  TipoProducto,
+} from '@core/models/Producto/productoModels';
 import { ProductosService } from '@core/services/Producto/ProductosService';
-import { ProductoAdminService } from '@core/services/Producto/ProductoAdminService';
+import { ProductoAdminService } from '@core/services/admin/ProductoAdminService/ProductoAdminService';
 import { AlertaService } from '@core/services/Modals/ModalsService';
 import { ComponenteConCambios } from '@core/guard/cambios-sin-guardar-guard';
 import { switchMap, of, catchError, throwError } from 'rxjs';
@@ -22,6 +29,7 @@ import { switchMap, of, catchError, throwError } from 'rxjs';
     LucideSearch,
     LucideChevronLeft,
     LucideChevronRight,
+    LucideImageOff,
   ],
   selector: 'app-administrar-productos',
   styleUrl: './administrar-productos.css',
@@ -32,20 +40,28 @@ export class AdministrarProductos implements OnInit, OnDestroy, ComponenteConCam
   private adminService = inject(ProductoAdminService);
   private alerta = inject(AlertaService);
 
-  productos = signal<Producto[]>([]);
+  productos = signal<ProductoPublicoResponse[]>([]);
+  categorias = signal<CategoriaOpcionResponse[]>([]);
+  readonly tiposProducto: TipoProducto[] = [
+    'GIFT_CARD',
+    'CLAVE_JUEGO',
+    'LICENCIA_SOFTWARE',
+    'RECARGA',
+    'SUSCRIPCION',
+  ];
   editandoId = signal<number | null>(null);
 
-  form: ProductoRequest = { clave: '' };
+  form: ProductoRequest = this.formularioVacio();
   private inicial = JSON.stringify(this.form);
 
-  // --- Imagen ---
+  //  Imagen 
   private readonly maxBytesImagen = 5 * 1024 * 1024; // igual que spring.servlet.multipart.max-file-size
   archivoImagen: File | null = null;
   vistaPrevia = signal<string | null>(null); // URL actual del producto o blob local
   inputKey = signal(0);                      // cambia para recrear el <input type="file"> y limpiarlo
   private blobUrl: string | null = null;
 
-  // --- Búsqueda y paginación ---
+  //  Búsqueda y paginación 
   private readonly tamanoPagina = 5;
   textoBusqueda = '';
   paginaActual = signal(0); // base 0
@@ -62,6 +78,10 @@ export class AdministrarProductos implements OnInit, OnDestroy, ComponenteConCam
 
   ngOnInit() {
     this.cargar();
+    this.productosService.obtenerListaDeCategorias().subscribe({
+      next: categorias => this.categorias.set(categorias),
+      error: err => this.mostrarError(err, 'No se pudieron cargar las categorías'),
+    });
   }
 
   ngOnDestroy() {
@@ -105,8 +125,8 @@ export class AdministrarProductos implements OnInit, OnDestroy, ComponenteConCam
     const input = event.target as HTMLInputElement;
     const archivo = input.files?.[0] ?? null;
 
-    if (archivo && !archivo.type.startsWith('image/')) {
-      this.alerta.error('El archivo debe ser una imagen.');
+    if (archivo && !['image/jpeg', 'image/png'].includes(archivo.type)) {
+      this.alerta.error('La imagen debe estar en formato JPG o PNG.');
       input.value = '';
       return;
     }
@@ -157,9 +177,9 @@ export class AdministrarProductos implements OnInit, OnDestroy, ComponenteConCam
     });
   }
 
-  editar(p: Producto) {
+  editar(p: ProductoPublicoResponse) {
     this.adminService.obtener(p.id).subscribe({
-      next: ({ id, imagenUrl, ...datos }) => {
+      next: ({ id, imagenUrl, slug, stock, fechaCreacion, ...datos }) => {
         this.editandoId.set(id);
         this.reiniciarForm(datos);
         this.reiniciarImagen(imagenUrl);
@@ -180,9 +200,35 @@ export class AdministrarProductos implements OnInit, OnDestroy, ComponenteConCam
     });
   }
 
+  desactivar(id: number) {
+    if (!confirm('¿Desactivar producto? Dejará de aparecer en el catálogo público.')) return;
+    this.adminService.desactivar(id).subscribe({
+      next: () => {
+        this.alerta.exito('Producto desactivado.');
+        if (this.editandoId() === id) this.cancelar();
+        this.cargar();
+      },
+      error: err => this.mostrarError(err, 'No se pudo desactivar el producto'),
+    });
+  }
+
+  quitarImagen() {
+    const id = this.editandoId();
+    if (id === null || !this.vistaPrevia()) return;
+    if (!confirm('¿Quitar la imagen de este producto?')) return;
+
+    this.adminService.quitarImagen(id).subscribe({
+      next: () => {
+        this.reiniciarImagen(null);
+        this.alerta.exito('Imagen eliminada.');
+      },
+      error: err => this.mostrarError(err, 'No se pudo quitar la imagen'),
+    });
+  }
+
   cancelar() {
     this.editandoId.set(null);
-    this.reiniciarForm({ clave: '' });
+    this.reiniciarForm(this.formularioVacio());
     this.reiniciarImagen(null);
   }
 
@@ -202,6 +248,16 @@ export class AdministrarProductos implements OnInit, OnDestroy, ComponenteConCam
     this.inputKey.update(k => k + 1); // recrea el input y borra el nombre del archivo
   }
 
+  private formularioVacio(): ProductoRequest {
+    return {
+      sku: '',
+      nombre: '',
+      tipo: 'GIFT_CARD',
+      precioVenta: 0,
+      activo: true,
+    };
+  }
+
   private liberarBlob() {
     if (this.blobUrl) {
       URL.revokeObjectURL(this.blobUrl);
@@ -209,7 +265,11 @@ export class AdministrarProductos implements OnInit, OnDestroy, ComponenteConCam
     }
   }
 
-  private mostrarError(err: any, mensajeDefault: string) {
-    this.alerta.error(typeof err.error === 'string' ? err.error : mensajeDefault);
+  private mostrarError(err: unknown, mensajeDefault: string) {
+    if (err instanceof HttpErrorResponse && typeof err.error === 'string') {
+      this.alerta.error(err.error);
+      return;
+    }
+    this.alerta.error(mensajeDefault);
   }
 }

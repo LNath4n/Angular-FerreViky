@@ -46,7 +46,7 @@
           <section class="profile-card danger-zone mt-4">
             <h2 class="h5 mb-2">Desactivar cuenta</h2>
             <p class="mb-3">Tu cuenta se desactivará y tendrás que iniciar sesión nuevamente.</p>
-            <button class="btn btn-outline-danger" type="button" (click)="desactivarCuenta()">
+            <button class="btn profile-danger-button" type="button" (click)="desactivarCuenta()">
               Desactivar mi cuenta
             </button>
           </section>
@@ -55,23 +55,50 @@
         <div class="col-12 col-lg-8 profile-details-column">
           <section class="profile-card">
             <h2 class="h4 section-title mb-4">Datos de la cuenta</h2>
-            <form (ngSubmit)="guardarCambios()">
+            <form #perfilForm="ngForm" (ngSubmit)="guardarCambios(perfilForm)">
               <div class="mb-3">
-                <label class="form-label" for="nombre">Nombre</label>
+                <label class="form-label" for="nombre">Nombre (opcional)</label>
                 <input id="nombre" name="nombre" class="form-control" type="text"
-                  [ngModel]="nombre()" (ngModelChange)="nombre.set($event)" required [disabled]="guardando()">
+                  #nombreControl="ngModel" [ngModel]="nombre()" (ngModelChange)="nombre.set($event ?? '')"
+                  maxlength="100" [disabled]="guardando()"
+                  [class.is-invalid]="nombreControl.invalid && nombreControl.touched">
+                @if (nombreControl.invalid && nombreControl.touched) {
+                  <div class="invalid-feedback">
+                    @if (nombreControl.hasError('maxlength')) {
+                      El nombre no puede superar los 100 caracteres.
+                    }
+                  </div>
+                }
               </div>
 
               <div class="mb-3">
-                <label class="form-label" for="email">Correo electrónico</label>
+                <label class="form-label" for="email">Correo electrónico (opcional)</label>
                 <input id="email" name="email" class="form-control" type="email"
-                  [ngModel]="email()" (ngModelChange)="email.set($event)" required [disabled]="guardando()">
+                  #emailControl="ngModel" [ngModel]="email()" (ngModelChange)="email.set($event ?? '')"
+                  [disabled]="guardando()"
+                  [class.is-invalid]="emailControl.invalid && emailControl.touched">
+                @if (emailControl.invalid && emailControl.touched) {
+                  <div class="invalid-feedback">
+                    @if (emailControl.hasError('email')) {
+                      Ingresa un correo electrónico válido.
+                    }
+                  </div>
+                }
               </div>
 
               <div class="mb-4">
-                <label class="form-label" for="telefono">Teléfono</label>
+                <label class="form-label" for="telefono">Teléfono (opcional)</label>
                 <input id="telefono" name="telefono" class="form-control" type="tel"
-                  [ngModel]="telefono()" (ngModelChange)="telefono.set($event)" required [disabled]="guardando()">
+                  #telefonoControl="ngModel" [ngModel]="telefono()" (ngModelChange)="telefono.set($event ?? '')"
+                  pattern="[0-9]{10}" maxlength="10" inputmode="numeric" [disabled]="guardando()"
+                  [class.is-invalid]="telefonoControl.invalid && telefonoControl.touched">
+                @if (telefonoControl.invalid && telefonoControl.touched) {
+                  <div class="invalid-feedback">
+                    @if (telefonoControl.hasError('pattern')) {
+                      El teléfono debe contener exactamente 10 dígitos.
+                    }
+                  </div>
+                }
               </div>
 
               <hr class="my-4">
@@ -81,18 +108,27 @@
               <div class="mb-3">
                 <label class="form-label" for="passwordVieja">Contraseña actual</label>
                 <input id="passwordVieja" name="passwordVieja" class="form-control" type="password"
-                  autocomplete="current-password" [ngModel]="passwordVieja()"
-                  (ngModelChange)="passwordVieja.set($event)" [disabled]="guardando()">
+                  #passwordViejaControl="ngModel" autocomplete="current-password" [ngModel]="passwordVieja()"
+                  (ngModelChange)="passwordVieja.set($event)" [required]="passwordNueva().length > 0"
+                  [disabled]="guardando()"
+                  [class.is-invalid]="passwordViejaControl.invalid && passwordViejaControl.touched">
+                @if (passwordViejaControl.invalid && passwordViejaControl.touched) {
+                  <div class="invalid-feedback">Ingresa tu contraseña actual para cambiarla.</div>
+                }
               </div>
 
               <div class="mb-4">
                 <label class="form-label" for="passwordNueva">Nueva contraseña</label>
                 <input id="passwordNueva" name="passwordNueva" class="form-control" type="password"
-                  autocomplete="new-password" [ngModel]="passwordNueva()"
-                  (ngModelChange)="passwordNueva.set($event)" [disabled]="guardando()">
+                  #passwordNuevaControl="ngModel" autocomplete="new-password" [ngModel]="passwordNueva()"
+                  (ngModelChange)="passwordNueva.set($event)" minlength="8" [disabled]="guardando()"
+                  [class.is-invalid]="passwordNuevaControl.invalid && passwordNuevaControl.touched">
+                @if (passwordNuevaControl.invalid && passwordNuevaControl.touched) {
+                  <div class="invalid-feedback">La nueva contraseña debe tener al menos 8 caracteres.</div>
+                }
               </div>
 
-              <button class="btn btn-primary" type="submit" [disabled]="guardando()">
+              <button class="btn btn-primary" type="submit" [disabled]="guardando() || perfilForm.invalid">
                 {{ guardando() ? 'Guardando...' : 'Guardar cambios' }}
               </button>
             </form>

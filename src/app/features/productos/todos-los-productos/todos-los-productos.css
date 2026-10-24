@@ -4,6 +4,10 @@
   gap: 1rem;
 }
 
+.productos-hero h1 {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+}
+
 .Repetible {
   padding: 1rem;
   border: 1px solid #ccc;

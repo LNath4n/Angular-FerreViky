@@ -20,6 +20,10 @@ export class AuthService {
   });
 
   isAdmin = computed(() => this.payload()?.role === 'ADMIN');
+  nombre = computed(() => {
+    const nombre = this.payload()?.nombre;
+    return typeof nombre === 'string' ? nombre : null;
+  });
 
   getToken() {
     return this.token();

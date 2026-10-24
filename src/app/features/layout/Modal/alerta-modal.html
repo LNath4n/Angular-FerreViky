@@ -1,6 +1,7 @@
 <div class="toast-container-furni" aria-live="polite">
   @for (a of alertas(); track a.id) {
-  <div class="toast-furni" [attr.data-tipo]="a.tipo" role="alert">
+  <div class="toast-furni" [attr.data-tipo]="a.tipo"
+    [class.toast-saliendo]="alertasCerrando().has(a.id)" role="alert">
 
     <div class="toast-icono">
       @switch (a.tipo) {

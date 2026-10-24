@@ -35,7 +35,36 @@
 }
 
 .danger-zone {
-  border-color: #dc3545;
+  border-color: #e5e5e5;
+}
+
+.danger-zone h2 {
+  color: #2f2f2f;
+}
+
+.profile-danger-button {
+  color: #a85f4b;
+  background: transparent;
+  border: 1px solid #c58b7c;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.profile-danger-button:hover {
+  color: #fff;
+  background: #a85f4b;
+  border-color: #a85f4b;
+}
+
+.profile-danger-button:focus-visible {
+  outline: 3px solid rgba(168, 95, 75, 0.25);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-danger-button {
+    transition: none;
+  }
+
 }
 
 @media (max-width: 767.98px) {

@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
-import { Carrito, AgregarCarrito } from '@core/models/Carrito/carritoModels';
+import { ActualizarCantidad, AgregarCarrito, Carrito } from '@core/models/Carrito/carritoModels';
 
 @Injectable({ providedIn: 'root' })
 export class CarritosService {
@@ -19,8 +19,8 @@ export class CarritosService {
         return this.http.get<Carrito>(`${this.url}`);
     }
 
-    actualizar(idProducto: number, cantidad: number): Observable<string> {
-        return this.http.put(`${this.url}/${idProducto}`, { cantidad }, { responseType: 'text' });
+    actualizar(dto: ActualizarCantidad): Observable<string> {
+        return this.http.put(this.url, dto, { responseType: 'text' });
     }
 
     eliminar(idProducto: number): Observable<string> {

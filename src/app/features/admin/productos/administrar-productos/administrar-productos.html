@@ -22,13 +22,13 @@
           <form (ngSubmit)="guardar()" #f="ngForm" autocomplete="off">
 
             <div class="mb-3">
-              <label class="form-label" for="clave">Clave *</label>
-              <input id="clave" name="clave" class="form-control" [(ngModel)]="form.clave" required />
+              <label class="form-label" for="sku">SKU *</label>
+              <input id="sku" name="sku" class="form-control" [(ngModel)]="form.sku" required />
             </div>
 
             <div class="mb-3">
-              <label class="form-label" for="codigo">Código</label>
-              <input id="codigo" name="codigo" class="form-control" [(ngModel)]="form.codigo" />
+              <label class="form-label" for="nombre">Nombre *</label>
+              <input id="nombre" name="nombre" class="form-control" [(ngModel)]="form.nombre" required />
             </div>
 
             <div class="mb-3">
@@ -38,35 +38,86 @@
 
             <div class="row g-3 mb-3">
               <div class="col-6">
-                <label class="form-label" for="marca">Marca</label>
-                <input id="marca" name="marca" class="form-control" [(ngModel)]="form.marca" />
+                <label class="form-label" for="plataforma">Plataforma</label>
+                <input id="plataforma" name="plataforma" class="form-control" [(ngModel)]="form.plataforma" />
               </div>
               <div class="col-6">
-                <label class="form-label" for="unidad">Unidad</label>
-                <input id="unidad" name="unidad" class="form-control" [(ngModel)]="form.unidad" />
+                <label class="form-label" for="tipo">Tipo *</label>
+                <select id="tipo" name="tipo" class="form-select" [(ngModel)]="form.tipo" required>
+                  @for (tipo of tiposProducto; track tipo) {
+                  <option [value]="tipo">{{ tipo }}</option>
+                  }
+                </select>
               </div>
             </div>
 
             <div class="row g-3 mb-3">
               <div class="col-6">
-                <label class="form-label" for="precio">Precio (IVA inc.)</label>
-                <input id="precio" name="precio" type="number" step="0.01" min="0" class="form-control"
-                  [(ngModel)]="form.precioPublicoIva" />
+                <label class="form-label" for="region">Región</label>
+                <input id="region" name="region" class="form-control" [(ngModel)]="form.region" />
               </div>
               <div class="col-6">
-                <label class="form-label" for="stock">Stock</label>
-                <input id="stock" name="stock" type="number" min="0" class="form-control" [(ngModel)]="form.stock" />
+                <label class="form-label" for="categoriaId">Categoría</label>
+                <select id="categoriaId" name="categoriaId" class="form-select" [(ngModel)]="form.categoriaId">
+                  <option [ngValue]="null">Sin categoría</option>
+                  @for (categoria of categorias(); track categoria.id) {
+                  <option [ngValue]="categoria.id">{{ categoria.nombre }}</option>
+                  }
+                </select>
               </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label class="form-label" for="valorNominal">Valor nominal</label>
+                <input id="valorNominal" name="valorNominal" type="number" step="0.01" min="0" class="form-control"
+                  [(ngModel)]="form.valorNominal" />
+              </div>
+              <div class="col-6">
+                <label class="form-label" for="moneda">Moneda</label>
+                <input id="moneda" name="moneda" maxlength="3" class="form-control" [(ngModel)]="form.moneda" />
+              </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label class="form-label" for="precioVenta">Precio de venta *</label>
+                <input id="precioVenta" name="precioVenta" type="number" step="0.01" min="0" class="form-control"
+                  [(ngModel)]="form.precioVenta" required />
+              </div>
+              <div class="col-6">
+                <label class="form-label" for="precioCosto">Precio de costo</label>
+                <input id="precioCosto" name="precioCosto" type="number" step="0.01" min="0" class="form-control"
+                  [(ngModel)]="form.precioCosto" />
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="instruccionesCanje">Instrucciones de canje</label>
+              <textarea id="instruccionesCanje" name="instruccionesCanje" class="form-control" rows="3"
+                [(ngModel)]="form.instruccionesCanje"></textarea>
+            </div>
+
+            <div class="form-check mb-3">
+              <input id="activo" name="activo" type="checkbox" class="form-check-input" [(ngModel)]="form.activo" />
+              <label class="form-check-label" for="activo">Producto activo</label>
             </div>
 
             <!-- Imagen -->
             <div class="mb-4">
               <label class="form-label" for="imagen">Imagen</label>
               @if (vistaPrevia(); as src) {
-              <img [src]="src" alt="Vista previa" class="img-fluid rounded mb-2 d-block" style="max-height: 160px;">
+              <div class="mb-2">
+                <img [src]="src" alt="Vista previa" class="img-fluid rounded d-block" style="max-height: 160px;">
+                @if (editandoId() !== null && !archivoImagen) {
+                <button type="button" class="btn btn-outline-black btn-sm mt-2" (click)="quitarImagen()">
+                  <svg lucideImageOff [size]="16"></svg> Quitar imagen
+                </button>
+                }
+              </div>
               }
               @for (k of [inputKey()]; track k) {
-              <input id="imagen" type="file" accept="image/*" class="form-control"
+              <input id="imagen" type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png" class="form-control"
                 (change)="onArchivoSeleccionado($event)" />
               }
             </div>
@@ -106,10 +157,9 @@
                 <tr>
                   <th>ID</th>
                   <th>Imagen</th>
-                  <th>Código</th>
-                  <th>Descripción</th>
-                  <th>Marca</th>
-                  <th>Unidad</th>
+                  <th>SKU</th>
+                  <th>Nombre</th>
+                  <th>Plataforma / tipo</th>
                   <th class="text-end">Precio</th>
                   <th class="text-end">Stock</th>
                   <th></th>
@@ -121,21 +171,22 @@
                   <td class="text-muted">{{ p.id }}</td>
                   <td>
                     @if (p.imagenUrl) {
-                    <img [src]="p.imagenUrl" [alt]="p.descripcion" loading="lazy"
+                    <img [src]="p.imagenUrl" [alt]="p.nombre" loading="lazy"
                       style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
                     }
                   </td>
-                  <td>{{ p.codigo }}</td>
-                  <td class="fw-semibold">{{ p.descripcion }}</td>
-                  <td>{{ p.marca }}</td>
-                  <td>{{ p.unidad }}</td>
-                  <td class="text-end">${{ p.precioPublicoIva }}</td>
+                  <td>{{ p.sku }}</td>
+                  <td class="fw-semibold">{{ p.nombre }}</td>
+                  <td>{{ p.plataforma || '—' }} · {{ p.tipo }}</td>
+                  <td class="text-end">${{ p.precioVenta }}</td>
                   <td class="text-end">{{ p.stock }}</td>
                   <td class="text-end text-nowrap">
                     <button type="button" class="admin-btn-icono" title="Editar" aria-label="Editar"
                       (click)="editar(p)">
                       <svg lucidePencil [size]="18"></svg>
                     </button>
+                    <button type="button" class="btn btn-outline-black btn-sm me-1"
+                      (click)="desactivar(p.id)">Desactivar</button>
                     <button type="button" class="admin-btn-icono admin-btn-peligro" title="Borrar" aria-label="Borrar"
                       (click)="borrar(p.id)">
                       <svg lucideTrash2 [size]="18"></svg>

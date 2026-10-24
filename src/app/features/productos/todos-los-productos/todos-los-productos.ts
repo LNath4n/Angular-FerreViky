@@ -1,5 +1,6 @@
 import { Component, inject, signal, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -7,7 +8,7 @@ import { LucidePackage, LucideSearch } from '@lucide/angular';
 import { ProductosService } from '@core/services/Producto/ProductosService';
 import { CarritosService } from '@core/services/Carrito/CarritosService';
 import { AuthService } from '@core/services/Auth/auth';
-import { Producto } from '@core/models/Producto/productoModels';
+import { ProductoPublicoResponse } from '@core/models/Producto/productoModels';
 import { AlertaService } from '@core/services/Modals/ModalsService';
 
 @Component({
@@ -24,8 +25,11 @@ export class TodosLosProductos implements AfterViewInit, OnDestroy {
   private carritosService = inject(CarritosService);
   private alerta = inject(AlertaService);
 
+  isLoggedIn = this.authService.isLoggedIn;
+  nombreUsuario = this.authService.nombre;
+
   private readonly tamanoPagina = 24;   // múltiplo de 2, 3 y 4: filas completas en cualquier ancho
-  productos = signal<Producto[]>([]);
+  productos = signal<ProductoPublicoResponse[]>([]);
   cargando = signal(false);
   paginaActual = 0;
   hayMasPaginas = true;
@@ -107,8 +111,8 @@ export class TodosLosProductos implements AfterViewInit, OnDestroy {
     this.imagenesFallidas.update(s => new Set(s).add(id));
   }
 
-  verDetalle(id: number) {
-    this.router.navigate(['/productos', id]);
+  verDetalle(slug: string) {
+    this.router.navigate(['/productos', slug]);
   }
 
   agregarAlCarrito(idProducto: number) {
@@ -119,14 +123,33 @@ export class TodosLosProductos implements AfterViewInit, OnDestroy {
 
     this.carritosService.agregar({ idProducto, cantidad: 1 })
       .subscribe({
-        next: (res) => {
+        next: () => {
           this.alerta.exito('Se agregó correctamente al carrito.');
-          console.log(res)
         },
-        error: (err) => {
-          console.error(err)
-          this.alerta.error('Hubo algún error al agregar el producto.')
+        error: error => {
+          const mensaje = this.mensajeError(error);
+          this.alerta.error(
+            mensaje ?? 'No se pudo agregar el producto al carrito. Revisa su disponibilidad e intenta de nuevo.'
+          );
         }
       });
+  }
+
+  private mensajeError(error: unknown): string | null {
+    if (!(error instanceof HttpErrorResponse)) return null;
+
+    const cuerpo: unknown = error.error;
+    if (typeof cuerpo === 'string' && cuerpo.trim()) return cuerpo.trim();
+
+    if (typeof cuerpo === 'object' && cuerpo !== null) {
+      if ('error' in cuerpo && typeof cuerpo.error === 'string' && cuerpo.error.trim()) {
+        return cuerpo.error.trim();
+      }
+      if ('message' in cuerpo && typeof cuerpo.message === 'string' && cuerpo.message.trim()) {
+        return cuerpo.message.trim();
+      }
+    }
+
+    return null;
   }
 }

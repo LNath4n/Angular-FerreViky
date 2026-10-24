@@ -18,9 +18,11 @@ export interface Confirmacion {
 @Injectable({ providedIn: 'root' })
 export class AlertaService {
   readonly alertas = signal<Alerta[]>([]);
+  readonly alertasCerrando = signal<Set<number>>(new Set());
   readonly confirmacion = signal<Confirmacion | null>(null);
   private contador = 0;
   private resolverConfirmacion: ((confirmada: boolean) => void) | null = null;
+  private readonly duracionSalidaMs = 300;
 
   private mostrar(tipo: TipoAlerta, titulo: string, texto: string, duracionMs = 4000) {
     const id = ++this.contador;
@@ -61,6 +63,16 @@ export class AlertaService {
   }
 
   cerrar(id: number) {
-    this.alertas.update(actual => actual.filter(a => a.id !== id));
+    if (this.alertasCerrando().has(id)) return;
+
+    this.alertasCerrando.update(actual => new Set(actual).add(id));
+    setTimeout(() => {
+      this.alertas.update(actual => actual.filter(a => a.id !== id));
+      this.alertasCerrando.update(actual => {
+        const nuevas = new Set(actual);
+        nuevas.delete(id);
+        return nuevas;
+      });
+    }, this.duracionSalidaMs);
   }
 }

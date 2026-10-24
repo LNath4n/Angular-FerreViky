@@ -7,8 +7,8 @@
       <!-- Imagen -->
       <div class="col-12 col-lg-6">
         <div class="detalle-imagen">
-          @if (!imagenFallida(producto.id)) {
-          <img [src]="producto.imagenUrl" [alt]="producto.descripcion"
+          @if (producto.imagenUrl && !imagenFallida(producto.id)) {
+          <img [src]="producto.imagenUrl" [alt]="producto.nombre"
             class="img-fluid" (error)="marcarImagenFallida(producto.id)">
           } @else {
           <svg lucidePackage color="#3b5d50" [size]="96" [strokeWidth]="1.25"></svg>
@@ -18,28 +18,53 @@
 
       <!-- Información -->
       <div class="col-12 col-lg-6">
-        <span class="detalle-marca">{{ producto.marca }}</span>
-        <h2 class="section-title mb-3">{{ producto.descripcion }}</h2>
+        <span class="detalle-marca">{{ producto.plataforma || producto.tipo }}</span>
+        <h2 class="section-title mb-3">{{ producto.nombre }}</h2>
 
-        <strong class="product-price detalle-precio">${{ producto.precioPublicoIva }}</strong>
-        <small class="d-block mb-4">IVA incluido</small>
+        <strong class="product-price detalle-precio">${{ producto.precioVenta }}</strong>
+        <small class="d-block mb-4">Precio de venta</small>
 
         <dl class="detalle-datos">
           <div>
-            <dt>Código</dt>
-            <dd>{{ producto.codigo }}</dd>
+            <dt>SKU</dt>
+            <dd>{{ producto.sku }}</dd>
           </div>
+          @if (producto.tipo) {
           <div>
-            <dt>Unidad</dt>
-            <dd>{{ producto.unidad }}</dd>
+            <dt>Tipo</dt>
+            <dd>{{ producto.tipo }}</dd>
           </div>
+          }
+          @if (producto.region) {
           <div>
-            <dt>Marca</dt>
-            <dd>{{ producto.marca }}</dd>
+            <dt>Región</dt>
+            <dd>{{ producto.region }}</dd>
+          </div>
+          }
+          @if (producto.valorNominal !== null) {
+          <div>
+            <dt>Valor nominal</dt>
+            <dd>{{ producto.valorNominal }} {{ producto.moneda }}</dd>
+          </div>
+          }
+          <div>
+            <dt>Disponibilidad</dt>
+            <dd>{{ producto.stock > 0 ? producto.stock + ' disponibles' : 'Agotado' }}</dd>
           </div>
         </dl>
 
-        <button class="btn btn-primary me-3" (click)="agregarAlCarrito(producto.id)">Agregar al carrito</button>
+        @if (producto.descripcion) {
+        <p class="mb-4">{{ producto.descripcion }}</p>
+        }
+        @if (producto.instruccionesCanje) {
+        <section class="mb-4">
+          <h3 class="h6">Instrucciones de canje</h3>
+          <p>{{ producto.instruccionesCanje }}</p>
+        </section>
+        }
+
+        <button class="btn btn-primary me-3" [disabled]="producto.stock <= 0"
+          (click)="agregarAlCarrito(producto.id)">Agregar al carrito</button>
 
         <a class="more detalle-regresar" style="cursor: pointer" (click)="regresar()">
           <svg lucideArrowLeft [size]="16"></svg> Regresar

@@ -17,44 +17,68 @@ export interface PageResponse<T> {
   size: number;
 }
 
-export interface GrupoPublico {
+export interface ProductoPublicoResponse {
   id: number;
+  slug: string;
+  sku: string;
   nombre: string;
-  productoIds: number[];
-  imagenUrls: string[];
+  descripcion: string | null;
+  plataforma: string | null;
+  tipo: string;
+  region: string | null;
+  valorNominal: number | null;
+  moneda: string | null;
+  precioVenta: number;
+  instruccionesCanje: string | null;
+  imagenUrl: string | null;
+  stock: number;
 }
 
-export interface GrupoAdmin {
+export interface CategoriaOpcionResponse {
   id: number;
   nombre: string;
-  prefijoClave: string;
-  palabrasComunes: string;
-  productoIds: number[];
 }
+
+export type TipoProducto =
+  | 'GIFT_CARD'
+  | 'CLAVE_JUEGO'
+  | 'LICENCIA_SOFTWARE'
+  | 'RECARGA'
+  | 'SUSCRIPCION';
 
 export interface ProductoRequest {
-  codigo?: string;
-  clave: string; // obligatoria
-  descripcion?: string;
-  margenMercado?: string;
-  caja?: string;
-  master?: string;
-  unidad?: string;
-  ean?: string;
-  precioMayoreoIva?: number;
-  precioDistribuidorIva?: number;
-  precioPublicoIva?: number;
-  marca?: string;
-  grupoDeProductosId?: number | null;
-  stock?: number;
-}
-
-export interface ProductoAdmin extends ProductoRequest {
-  id: number;
-  imagenUrl: string | null;
-}
-
-export interface GrupoOpcion {
-  id: number;
+  sku: string;
   nombre: string;
+  descripcion?: string | null;
+  plataforma?: string | null;
+  tipo: TipoProducto;
+  region?: string | null;
+  valorNominal?: number | null;
+  moneda?: string | null;
+  precioVenta: number;
+  precioCosto?: number | null;
+  instruccionesCanje?: string | null;
+  activo?: boolean | null;
+  categoriaId?: number | null;
+}
+
+export interface ProductoAdminResponse {
+  id: number;
+  sku: string;
+  nombre: string;
+  slug: string;
+  descripcion: string | null;
+  plataforma: string | null;
+  tipo: TipoProducto;
+  region: string | null;
+  valorNominal: number | null;
+  moneda: string | null;
+  precioVenta: number;
+  precioCosto: number | null;
+  instruccionesCanje: string | null;
+  activo: boolean;
+  categoriaId: number | null;
+  imagenUrl: string | null;
+  stock: number;
+  fechaCreacion: string;
 }

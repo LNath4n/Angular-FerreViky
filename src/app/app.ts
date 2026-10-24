@@ -11,5 +11,5 @@ import { AlertaModal } from './features/layout/Modal/alerta-modal';
 })
 export class App {
   //Es super importante en los imports poner RouterLink si vamos a viajar entre componentes
-  protected readonly title = signal('Angular-FerreViky');
+  protected readonly title = signal('Angular 6.0.3');
 }

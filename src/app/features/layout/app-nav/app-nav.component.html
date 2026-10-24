@@ -6,12 +6,12 @@
     <mat-toolbar>Menu</mat-toolbar>
     <mat-nav-list>
       <a mat-list-item routerLink="/productos" (click)="drawer.close()">Productos</a>
-      <a mat-list-item routerLink="/grupos" (click)="drawer.close()">Grupo de Productos</a>
 
       @if (isLoggedIn()) {
       <a mat-list-item routerLink="/carrito" (click)="drawer.close()">Mi carrito</a>
       @if (isAdmin()) {
-      <a mat-list-item routerLink="/admin/productos" (click)="drawer.close()">Administrar</a>
+      <a mat-list-item routerLink="/admin/productos" (click)="drawer.close()">Administrar productos</a>
+      <a mat-list-item routerLink="/admin/codigos" (click)="drawer.close()">Administrar códigos</a>
       }
       <a mat-list-item routerLink="/perfil" routerLinkActive="active" (click)="drawer.close()">
         <mat-icon>account_circle</mat-icon> Mi perfil
@@ -33,7 +33,7 @@
       arial-label="FerreViky navigation bar">
 
       <div class="container">
-        <a class="navbar-brand" routerLink="/">FerreViky<span>.</span></a>
+        <a class="navbar-brand" routerLink="/">Angular<span>.</span></a>
 
         <button class="navbar-toggler" type="button" aria-label="Toggle navigation" (click)="drawer.toggle()">
           <span class="navbar-toggler-icon"></span>
@@ -43,9 +43,6 @@
           <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
             <li class="nav-item" routerLinkActive="active">
               <a class="nav-link" routerLink="/productos">Productos</a>
-            </li>
-            <li class="nav-item" routerLinkActive="active">
-              <a class="nav-link" routerLink="/grupos">Grupo de Productos</a>
             </li>
 
             @if (!isLoggedIn()) {
@@ -61,11 +58,15 @@
           @if (isLoggedIn()) {
           <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
             @if (isAdmin()) {
-            <li>
-              <a class="nav-link" routerLink="/admin/productos" routerLinkActive="active" title="Administrar productos"
-                aria-label="Administrar productos">
+            <li class="admin-menu-item" routerLinkActive="active">
+              <button class="nav-link admin-menu-trigger" type="button" title="Administrar"
+                aria-label="Administrar" aria-haspopup="true">
                 <svg lucideLayoutDashboard color="#fff" [size]="22"></svg>
-              </a>
+              </button>
+              <div class="admin-menu" aria-label="Opciones de administración">
+                <a routerLink="/admin/productos" routerLinkActive="active">Administrar productos</a>
+                <a routerLink="/admin/codigos" routerLinkActive="active">Administrar códigos</a>
+              </div>
             </li>
             }
             <li>

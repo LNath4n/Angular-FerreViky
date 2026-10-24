@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, switchMap } from 'rxjs';
 import { LucideTrash2, LucidePackage } from '@lucide/angular';
@@ -26,7 +27,7 @@ export class VerCarrito {
   // Cada .next() vuelve a pedir el carrito sin vaciar la pantalla mientras llega
   private recargar$ = new BehaviorSubject<void>(undefined);
   carrito$ = this.recargar$.pipe(
-    switchMap(() => this.carritoService.obtenerCarrito())   // GET /carrito
+    switchMap(() => this.carritoService.obtenerCarrito()) // GET /carrito
   );
 
   imagenFallida(productoId: number): boolean {
@@ -41,9 +42,16 @@ export class VerCarrito {
     const nueva = item.cantidad + delta;
     if (nueva < 1) return;
 
-    this.carritoService.actualizar(item.productoId, nueva).subscribe({
+    const request = { idProducto: item.productoId, cantidad: nueva };
+
+    this.carritoService.actualizar(request).subscribe({
       next: () => this.recargar$.next(),
-      error: () => this.alerta.error('No se pudo actualizar la cantidad.')
+      error: error => {
+        const mensaje = this.mensajeError(error);
+        this.alerta.error(
+          mensaje ?? 'No se pudo actualizar la cantidad. Revisa la cantidad y el stock disponible.'
+        );
+      }
     });
   }
 
@@ -59,5 +67,23 @@ export class VerCarrito {
 
   seguirComprando() {
     this.router.navigate(['/productos']);
+  }
+
+  private mensajeError(error: unknown): string | null {
+    if (!(error instanceof HttpErrorResponse)) return null;
+
+    const cuerpo: unknown = error.error;
+    if (typeof cuerpo === 'string' && cuerpo.trim()) return cuerpo.trim();
+
+    if (typeof cuerpo === 'object' && cuerpo !== null) {
+      if ('error' in cuerpo && typeof cuerpo.error === 'string' && cuerpo.error.trim()) {
+        return cuerpo.error.trim();
+      }
+      if ('message' in cuerpo && typeof cuerpo.message === 'string' && cuerpo.message.trim()) {
+        return cuerpo.message.trim();
+      }
+    }
+
+    return null;
   }
 }

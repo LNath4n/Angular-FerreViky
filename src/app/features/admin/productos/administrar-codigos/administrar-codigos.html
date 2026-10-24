@@ -1,0 +1,175 @@
+<div class="product-section">
+  <div class="container">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <h2 class="section-title mb-0">Administrar códigos</h2>
+      <span class="admin-contador">{{ productos().length }} productos</span>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-12 col-lg-4">
+        <div class="admin-card admin-form-sticky">
+          <h3 class="h5 mb-3">Cargar códigos</h3>
+
+          @if (productoSeleccionado(); as producto) {
+          <div class="admin-producto-seleccionado mb-3">
+            <span class="admin-contador">Producto seleccionado</span>
+            <strong>{{ producto.nombre }}</strong>
+            <span class="admin-contador">SKU: {{ producto.sku }} · ID: {{ producto.id }}</span>
+          </div>
+          } @else {
+          <p class="admin-ayuda mb-3">Selecciona un producto de la lista para continuar.</p>
+          }
+
+          <form (ngSubmit)="cargarCodigos()" autocomplete="off">
+            <div class="mb-3">
+              <label class="form-label" for="codigos">Códigos *</label>
+              <textarea
+                id="codigos"
+                name="codigos"
+                class="form-control admin-codigos-textarea"
+                rows="12"
+                [(ngModel)]="textoCodigos"
+                placeholder="Un código por línea&#10;STEAM-AAAA-0001&#10;STEAM-AAAA-0002"
+                [disabled]="!productoSeleccionado() || cargandoCodigos()"
+                required
+              ></textarea>
+              <div class="d-flex justify-content-between mt-2">
+                <span class="admin-ayuda">Se permiten hasta 500 códigos por carga.</span>
+                <span class="admin-contador">{{ cantidadCodigosIngresados() }} / 500</span>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-primary w-100"
+              [disabled]="!productoSeleccionado() || cargandoCodigos() || cantidadCodigosIngresados() === 0"
+            >
+              {{ cargandoCodigos() ? 'Cargando...' : 'Cargar códigos' }}
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-8">
+        <div class="admin-card p-0">
+          <form class="admin-toolbar" (ngSubmit)="buscarProductos()">
+            <div class="admin-buscador">
+              <svg lucideSearch [size]="18"></svg>
+              <input
+                type="search"
+                class="form-control"
+                placeholder="Buscar productos"
+                name="busquedaProductos"
+                [(ngModel)]="textoBusqueda"
+              />
+              @if (textoBusqueda) {
+              <button
+                type="button"
+                class="admin-buscador-limpiar"
+                aria-label="Limpiar búsqueda"
+                (click)="limpiarBusqueda()"
+              >&times;</button>
+              }
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm" [disabled]="cargandoProductos()">
+              Buscar
+            </button>
+          </form>
+
+          <div class="table-responsive">
+            <table class="table admin-tabla mb-0">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>SKU</th>
+                  <th>Nombre</th>
+                  <th>Tipo</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @if (cargandoProductos()) {
+                <tr>
+                  <td colspan="5" class="text-center py-5">Cargando productos...</td>
+                </tr>
+                } @else {
+                  @for (producto of productos(); track producto.id) {
+                  <tr [class.fila-seleccionada]="productoSeleccionado()?.id === producto.id">
+                    <td class="text-muted">{{ producto.id }}</td>
+                    <td>{{ producto.sku }}</td>
+                    <td class="fw-semibold">{{ producto.nombre }}</td>
+                    <td>{{ producto.tipo }}</td>
+                    <td class="text-end">
+                      <button
+                        type="button"
+                        class="btn btn-sm"
+                        [class.btn-primary]="productoSeleccionado()?.id === producto.id"
+                        [class.btn-outline-black]="productoSeleccionado()?.id !== producto.id"
+                        [attr.aria-pressed]="productoSeleccionado()?.id === producto.id"
+                        (click)="seleccionarProducto(producto)"
+                      >
+                        {{ productoSeleccionado()?.id === producto.id ? 'Seleccionado' : 'Seleccionar' }}
+                      </button>
+                    </td>
+                  </tr>
+                  } @empty {
+                  <tr>
+                    <td colspan="5" class="text-center py-5">No se encontraron productos.</td>
+                  </tr>
+                  }
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <div class="admin-paginacion">
+            <span class="admin-paginacion-info">
+              Página {{ paginaActual() + 1 }} de {{ totalPaginas() }}
+            </span>
+
+            <nav aria-label="Paginación de productos">
+              <ul class="pagination mb-0">
+                <li class="page-item" [class.disabled]="paginaActual() === 0 || cargandoProductos()">
+                  <button
+                    type="button"
+                    class="page-link"
+                    aria-label="Anterior"
+                    (click)="irAPagina(paginaActual() - 1)"
+                  >
+                    <svg lucideChevronLeft [size]="16"></svg>
+                  </button>
+                </li>
+
+                @for (pagina of paginas(); track pagina) {
+                <li class="page-item" [class.active]="pagina === paginaActual()">
+                  <button
+                    type="button"
+                    class="page-link"
+                    [disabled]="cargandoProductos()"
+                    [attr.aria-current]="pagina === paginaActual() ? 'page' : null"
+                    (click)="irAPagina(pagina)"
+                  >{{ pagina + 1 }}</button>
+                </li>
+                }
+
+                <li
+                  class="page-item"
+                  [class.disabled]="paginaActual() >= totalPaginas() - 1 || cargandoProductos()"
+                >
+                  <button
+                    type="button"
+                    class="page-link"
+                    aria-label="Siguiente"
+                    (click)="irAPagina(paginaActual() + 1)"
+                  >
+                    <svg lucideChevronRight [size]="16"></svg>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

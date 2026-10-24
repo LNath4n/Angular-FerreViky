@@ -24,6 +24,78 @@
   transition: background-color 0.2s;
 }
 
+.admin-menu-item {
+  position: relative;
+}
+
+.custom-navbar .custom-navbar-cta .admin-menu-trigger {
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.admin-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 1050;
+  min-width: 210px;
+  padding: 8px 0;
+  background: #fff;
+  border: 1px solid rgba(59, 93, 80, 0.12);
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-8px);
+  transition: opacity 180ms ease, transform 180ms ease, visibility 180ms;
+}
+
+.admin-menu::before {
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  left: 0;
+  height: 9px;
+  content: "";
+}
+
+.admin-menu-item:hover .admin-menu,
+.admin-menu-item:focus-within .admin-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.admin-menu a {
+  display: block;
+  padding: 10px 16px;
+  color: #3b5d50;
+  opacity: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.admin-menu a:hover,
+.admin-menu a:focus-visible {
+  background: #f1f5f3;
+  color: #263f36;
+}
+
+.admin-menu a::before {
+  content: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-menu,
+  .admin-menu a {
+    transition: none;
+  }
+}
+
 .custom-navbar .custom-navbar-cta .nav-link:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }

@@ -29,14 +29,9 @@ export const routes: Routes = [
           .then(m => m.TodosLosProductos)
       },
       {
-        path: 'productos/:id',
+        path: 'productos/:slug',
         loadComponent: () => import('./features/productos/un-producto/un-producto')
           .then(m => m.UnProducto)
-      },
-      {
-        path: 'grupos',
-        loadComponent: () => import('./features/productos/grupos-de-productos/grupos-de-productos')
-          .then(m => m.GruposDeProductos)
       },
       {
         path: 'carrito',
@@ -51,16 +46,17 @@ export const routes: Routes = [
           .then(m => m.Verperfil)
       },
       {
-        path: 'grupos/:id',
-        loadComponent: () => import('./features/productos/grupos-de-productos-individual/grupos-de-productos-individual')
-          .then(m => m.GruposDeProductosIndividual)
-      },
-      {
         path: 'admin/productos',
         canActivate: [adminGuard],
         canDeactivate: [cambiosSinGuardarGuard],
         loadComponent: () => import('./features/admin/productos/administrar-productos/administrar-productos')
           .then(m => m.AdministrarProductos)
+      },
+      {
+        path: 'admin/codigos',
+        canActivate: [adminGuard],
+        loadComponent: () => import('./features/admin/productos/administrar-codigos/administrar-codigos')
+          .then(m => m.AdministrarCodigos)
       },
     ]
   },

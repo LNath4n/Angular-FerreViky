@@ -1,5 +1,5 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '@core/services/Auth/auth';
 import { ClientesService } from '@core/services/Cliente/ClientesService';
@@ -60,14 +60,22 @@ export class Verperfil implements OnInit, OnDestroy {
     });
   }
 
-  guardarCambios() {
+  guardarCambios(form: NgForm) {
+    if (form.invalid) {
+      form.control.markAllAsTouched();
+      return;
+    }
+
     const perfilActual = this.perfil();
     if (!perfilActual) return;
 
     const request: ClienteEditarRequest = {};
-    if (this.email() !== perfilActual.email) request.email = this.email();
-    if (this.nombre() !== perfilActual.nombre) request.nombre = this.nombre();
-    if (this.telefono() !== perfilActual.telefono) request.telefono = this.telefono();
+    const email = (this.email() ?? '').trim();
+    const nombre = (this.nombre() ?? '').trim();
+    const telefono = (this.telefono() ?? '').trim();
+    if (email && email !== perfilActual.email) request.email = email;
+    if (nombre && nombre !== perfilActual.nombre) request.nombre = nombre;
+    if (telefono && telefono !== perfilActual.telefono) request.telefono = telefono;
 
     if (this.passwordNueva()) {
       if (!this.passwordVieja()) {

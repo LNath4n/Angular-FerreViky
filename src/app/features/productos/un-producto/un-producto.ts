@@ -1,8 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { map, switchMap } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Observable, map, switchMap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LucidePackage, LucideArrowLeft } from '@lucide/angular';
+import { ProductoPublicoResponse } from '@core/models/Producto/productoModels';
 import { ProductosService } from '@core/services/Producto/ProductosService';
 import { AuthService } from '@core/services/Auth/auth';
 import { CarritosService } from '@core/services/Carrito/CarritosService';
@@ -10,7 +12,7 @@ import { AlertaService } from '@core/services/Modals/ModalsService';
 
 @Component({
   selector: 'app-un-producto',
-  imports: [CommonModule, LucidePackage, LucideArrowLeft],
+  imports: [AsyncPipe, LucidePackage, LucideArrowLeft],
   templateUrl: './un-producto.html',
   styleUrl: './un-producto.css',
 })
@@ -26,12 +28,12 @@ export class UnProducto {
   // IDs de productos cuya imagen no existe (se muestra el ícono de paquete)
   private imagenesFallidas = signal<Set<number>>(new Set());
 
-  id$ = this.route.paramMap.pipe(
-    map(params => Number(params.get('id')))
+  slug$ = this.route.paramMap.pipe(
+    map(params => params.get('slug') ?? '')
   );
 
-  producto$ = this.id$.pipe(
-    switchMap(id => this.productosService.getById(id))
+  producto$: Observable<ProductoPublicoResponse> = this.slug$.pipe(
+    switchMap(slug => this.productosService.getBySlug(slug))
   );
 
   imagenFallida(id: number): boolean {
@@ -50,15 +52,34 @@ export class UnProducto {
 
     this.carritosService.agregar({ idProducto, cantidad: 1 })
       .subscribe({
-        next: (res) => {
+        next: () => {
           this.alerta.exito('Se agregó correctamente al carrito.');
-          console.log(res);
         },
-        error: (err) => {
-          console.error(err);
-          this.alerta.error('Hubo algún error al agregar el producto.');
+        error: error => {
+          const mensaje = this.mensajeError(error);
+          this.alerta.error(
+            mensaje ?? 'No se pudo agregar el producto al carrito. Revisa su disponibilidad e intenta de nuevo.'
+          );
         }
       });
+  }
+
+  private mensajeError(error: unknown): string | null {
+    if (!(error instanceof HttpErrorResponse)) return null;
+
+    const cuerpo: unknown = error.error;
+    if (typeof cuerpo === 'string' && cuerpo.trim()) return cuerpo.trim();
+
+    if (typeof cuerpo === 'object' && cuerpo !== null) {
+      if ('error' in cuerpo && typeof cuerpo.error === 'string' && cuerpo.error.trim()) {
+        return cuerpo.error.trim();
+      }
+      if ('message' in cuerpo && typeof cuerpo.message === 'string' && cuerpo.message.trim()) {
+        return cuerpo.message.trim();
+      }
+    }
+
+    return null;
   }
 
   regresar() {
