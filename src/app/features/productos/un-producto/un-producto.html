@@ -1,7 +1,14 @@
 <div class="product-section">
   <div class="container">
+    @let estado = productoEstado$ | async;
 
-    @if (producto$ | async; as producto) {
+    @if (!estado || estado.status === 'loading') {
+    <div class="text-center py-5" role="status">
+      <span class="spinner-border text-success" aria-hidden="true"></span>
+      <p class="mt-3 mb-0">Cargando producto...</p>
+    </div>
+    } @else if (estado.status === 'loaded') {
+    @let producto = estado.producto;
     <div class="row align-items-center g-5">
 
       <!-- Imagen -->
@@ -72,9 +79,15 @@
       </div>
 
     </div>
-    } @else {
+    } @else if (estado.status === 'not-found') {
     <div class="text-center py-5">
       <h2 class="section-title mb-3">No se encontró información del producto</h2>
+      <button class="btn btn-primary" (click)="regresar()">Ver productos</button>
+    </div>
+    } @else {
+    <div class="text-center py-5">
+      <h2 class="section-title mb-3">No se pudo cargar el producto</h2>
+      <p class="mb-4">Inténtalo de nuevo más tarde.</p>
       <button class="btn btn-primary" (click)="regresar()">Ver productos</button>
     </div>
     }

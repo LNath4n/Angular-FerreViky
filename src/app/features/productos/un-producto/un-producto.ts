@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Observable, map, switchMap } from 'rxjs';
+import { catchError, map, of, startWith, switchMap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LucidePackage, LucideArrowLeft } from '@lucide/angular';
 import { ProductoPublicoResponse } from '@core/models/Producto/productoModels';
@@ -9,6 +9,12 @@ import { ProductosService } from '@core/services/Producto/ProductosService';
 import { AuthService } from '@core/services/Auth/auth';
 import { CarritosService } from '@core/services/Carrito/CarritosService';
 import { AlertaService } from '@core/services/Modals/ModalsService';
+
+type ProductoEstado =
+  | { status: 'loading' }
+  | { status: 'loaded'; producto: ProductoPublicoResponse }
+  | { status: 'not-found' }
+  | { status: 'error' };
 
 @Component({
   selector: 'app-un-producto',
@@ -28,12 +34,21 @@ export class UnProducto {
   // IDs de productos cuya imagen no existe (se muestra el ícono de paquete)
   private imagenesFallidas = signal<Set<number>>(new Set());
 
-  slug$ = this.route.paramMap.pipe(
-    map(params => params.get('slug') ?? '')
-  );
+  productoEstado$ = this.route.paramMap.pipe(
+    map(params => params.get('slug') ?? ''),
+    switchMap(slug => {
+      if (!slug) return of<ProductoEstado>({ status: 'not-found' });
 
-  producto$: Observable<ProductoPublicoResponse> = this.slug$.pipe(
-    switchMap(slug => this.productosService.getBySlug(slug))
+      return this.productosService.getBySlug(slug).pipe(
+        map(producto => ({ status: 'loaded', producto }) as const),
+        startWith({ status: 'loading' } as const),
+        catchError(error => of<ProductoEstado>({
+          status: error instanceof HttpErrorResponse && error.status === 404
+            ? 'not-found'
+            : 'error'
+        }))
+      );
+    })
   );
 
   imagenFallida(id: number): boolean {
