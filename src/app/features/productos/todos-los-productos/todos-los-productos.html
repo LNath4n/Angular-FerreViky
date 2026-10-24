@@ -55,11 +55,9 @@
           }
 
           <h3 class="product-title">{{ producto.nombre }}</h3>
-          @if (producto.descripcion) {
-          <p class="mb-1">{{ producto.descripcion }}</p>
-          }
-          <p class="mb-1">{{ producto.plataforma || producto.tipo }} · {{ producto.region || 'Global' }}</p>
-          <p class="mb-1">SKU: {{ producto.sku }} · Stock: {{ producto.stock }}</p>
+          <p class="mb-1 product-description">{{ producto.descripcion || '' }}</p>
+          <p class="mb-1 product-meta">{{ producto.plataforma || producto.tipo }} · {{ producto.region || 'Global' }}</p>
+          <p class="mb-1 product-meta">SKU: {{ producto.sku }} · Stock: {{ producto.stock }}</p>
           <strong class="product-price">${{ producto.precioVenta }}</strong>
 
           <span class="icon-cross" (click)="$event.stopPropagation(); agregarAlCarrito(producto.id)">

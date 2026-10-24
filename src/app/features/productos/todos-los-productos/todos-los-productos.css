@@ -8,6 +8,40 @@
   font-size: clamp(2.5rem, 5vw, 3.5rem);
 }
 
+.product-section .product-item {
+  height: 100%;
+}
+
+.product-section .product-item .product-thumbnail {
+  width: 100%;
+  height: clamp(240px, 28vw, 340px);
+  object-fit: contain;
+}
+
+.product-section .product-item h3 {
+  display: -webkit-box;
+  min-height: 2.5em;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.product-section .product-item .product-description {
+  display: -webkit-box;
+  height: 4.5em;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.product-section .product-item .product-meta {
+  display: -webkit-box;
+  min-height: 1.5em;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
 .Repetible {
   padding: 1rem;
   border: 1px solid #ccc;
